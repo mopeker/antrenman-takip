@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f0f0f">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Antrenman">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<title>Antrenman Takip v2.2</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+:root {
+  --bg:#0f0f0f; --surface:#1a1a1a; --surface2:#222;
+  --border:#2a2a2a; --accent:#e8ff47; --accent2:#ff6b35;
+  --blue:#4a9eff; --green:#4ade80; --red:#f87171;
+  --text:#f0f0f0; --muted:#888; --dim:#444;
+  --font-ui:'Manrope',-apple-system,BlinkMacSystemFont,sans-serif;
+  --font-num:'JetBrains Mono',ui-monospace,monospace;
+}
+body { background:var(--bg); color:var(--text); font-family:var(--font-ui); padding:12px; padding-bottom:90px; }
+.wrap { max-width:500px; margin:0 auto; }
+
+/* ---------- HEADER ---------- */
+.hdr { display:flex; justify-content:space-between; align-items:center; gap:10px; padding-bottom:12px; border-bottom:1px solid var(--border); margin-bottom:14px; }
+.hdr-t { font-size:19px; font-weight:800; letter-spacing:-0.01em; }
+.hdr-s { font-size:11px; color:var(--muted); margin-top:2px; }
+.wsel { background:rgba(232,255,71,.08); border:1px solid var(--accent); color:var(--accent); padding:8px 10px; border-radius:20px; font-size:12px; font-weight:700; max-width:160px; }
+.wsel:focus { outline:none; }
+
+/* ---------- TABS ---------- */
+.tabs { display:flex; gap:6px; margin-bottom:14px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+.tabs::-webkit-scrollbar { display:none; }
+.tab { flex:0 0 auto; padding:10px 14px; border:1px solid var(--border); border-radius:8px; background:var(--surface); color:var(--muted); font-size:11px; font-weight:600; cursor:pointer; text-align:center; white-space:nowrap; }
+.tab.on { background:rgba(232,255,71,.1); border-color:var(--accent); color:var(--accent); }
+.page { display:none; }
+.page.on { display:block; }
+
+/* ---------- TIMERS ---------- */
+.timers { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px; }
+.tc { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px; text-align:center; }
+.tl { font-size:10px; color:var(--muted); text-transform:uppercase; margin-bottom:4px; }
+.td { font-size:28px; font-weight:700; color:var(--accent); font-family:var(--font-num); font-variant-numeric:tabular-nums; letter-spacing:-0.02em; text-shadow:0 0 14px rgba(232,255,71,.4); margin-bottom:8px; }
+.tbs { display:flex; gap:4px; justify-content:center; }
+.tb { padding:6px 12px; border:1px solid var(--border); border-radius:5px; background:var(--surface2); color:var(--text); font-size:11px; font-weight:600; cursor:pointer; }
+.slider { width:100%; margin:6px 0 8px; accent-color:var(--accent); }
+
+/* ---------- KALORİ + PROGRESYON ---------- */
+.cal-bar { background:rgba(74,222,128,.08); border:1px solid rgba(74,222,128,.2); border-radius:10px; padding:10px 14px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; }
+.cal-lbl { font-size:11px; color:var(--muted); text-transform:uppercase; }
+.cal-num { font-size:24px; font-weight:700; color:var(--green); font-family:var(--font-num); font-variant-numeric:tabular-nums; letter-spacing:-0.02em; text-shadow:0 0 12px rgba(74,222,128,.35); }
+.prog { background:rgba(74,158,255,.08); border:1px solid rgba(74,158,255,.2); border-radius:10px; padding:10px 12px; margin-bottom:14px; font-size:11px; color:var(--blue); line-height:1.6; }
+
+/* ---------- EGZERSİZ KARTI ---------- */
+.card { background:var(--surface); border:1px solid var(--border); border-radius:12px; margin-bottom:10px; overflow:hidden; }
+.card.done { border-color:rgba(74,222,128,.3); }
+.ch { display:flex; align-items:center; gap:10px; padding:12px 12px 0; }
+.cnum { width:26px; height:26px; border-radius:50%; background:var(--surface2); border:1px solid var(--border); font-size:11px; font-weight:700; color:var(--muted); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.card.done .cnum { background:var(--green); border-color:var(--green); color:#000; }
+.ci { flex:1; min-width:0; }
+.cn { font-size:13px; font-weight:600; }
+.ca { font-size:10px; color:var(--muted); margin-top:1px; }
+.ctags { display:flex; gap:4px; flex-wrap:wrap; margin-top:4px; }
+.tag { font-size:9px; padding:2px 6px; border-radius:10px; font-weight:600; }
+.tm { background:rgba(232,255,71,.1); color:var(--accent); border:1px solid rgba(232,255,71,.2); }
+.ts { background:rgba(255,107,53,.1); color:var(--accent2); border:1px solid rgba(255,107,53,.2); }
+.tp { background:rgba(74,158,255,.1); color:var(--blue); border:1px solid rgba(74,158,255,.2); }
+.tk { background:rgba(74,222,128,.1); color:var(--green); border:1px solid rgba(74,222,128,.2); }
+.cbox { text-align:right; flex-shrink:0; min-width:50px; }
+.cbox-n { font-size:20px; font-weight:700; color:var(--green); font-family:var(--font-num); font-variant-numeric:tabular-nums; text-shadow:0 0 10px rgba(74,222,128,.3); line-height:1; }
+.cbox-l { font-size:9px; color:var(--muted); text-transform:uppercase; }
+.vrow { display:flex; justify-content:space-between; align-items:center; padding:6px 12px 0; }
+.vlink { font-size:11px; color:var(--accent); text-decoration:none; }
+.mini { background:none; border:1px solid var(--border); color:var(--muted); font-size:10px; padding:4px 8px; border-radius:5px; cursor:pointer; }
+.inp-row { display:grid; grid-template-columns:1fr 1fr; gap:6px; padding:10px 12px 0; }
+.ig { display:flex; flex-direction:column; gap:3px; }
+.il { font-size:9px; color:var(--muted); text-transform:uppercase; }
+.inp { padding:9px 8px; border:1px solid var(--border); border-radius:6px; background:var(--surface2); color:var(--text); font-size:14px; font-weight:600; width:100%; }
+.inp:focus { outline:none; border-color:var(--accent); }
+
+/* ---------- SETLER ---------- */
+.sets { padding:8px 12px 0; }
+.sethdr { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+.sethdr span { font-size:10px; color:var(--muted); text-transform:uppercase; }
+.ib { width:30px; height:30px; border:1px solid var(--border); border-radius:6px; background:var(--surface2); color:var(--text); font-size:15px; font-weight:700; cursor:pointer; margin-left:4px; }
+.sr { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+.sl { font-size:11px; color:var(--muted); width:40px; flex-shrink:0; }
+.sb { flex:1; padding:9px; border:1px solid var(--border); border-radius:6px; background:var(--surface2); color:var(--muted); font-size:11px; font-weight:600; cursor:pointer; text-align:center; }
+.sb.on { background:var(--green); border-color:var(--green); color:#000; }
+.sc { font-size:11px; color:var(--green); font-family:var(--font-num); font-variant-numeric:tabular-nums; width:62px; text-align:right; flex-shrink:0; }
+
+/* ---------- GEÇMİŞ (kart içi) ---------- */
+.hist { margin:8px 12px 0; border-top:1px solid var(--border); padding-top:8px; }
+.hl { font-size:10px; color:var(--muted); text-transform:uppercase; margin-bottom:6px; display:flex; justify-content:space-between; }
+.htgl { font-size:10px; color:var(--accent); cursor:pointer; background:none; border:none; }
+.hlist { display:none; }
+.hlist.open { display:block; }
+.he { display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid var(--border); font-size:11px; }
+.he:last-child { border-bottom:none; }
+.hd { color:var(--muted); }
+.hv { font-weight:600; }
+.hempty { font-size:11px; color:var(--dim); font-style:italic; padding:4px 0; }
+.note { margin:8px 12px 12px; }
+.noteinp { width:100%; padding:8px; border:1px solid var(--border); border-radius:6px; background:var(--surface2); color:var(--text); font-size:12px; font-family:inherit; }
+.noteinp:focus { outline:none; border-color:var(--accent); }
+.fin { width:100%; padding:15px; background:var(--accent); color:#000; border:none; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; margin-top:16px; }
+
+/* ---------- GEÇMİŞ / İSTATİSTİK SAYFALARI ---------- */
+.wi { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px; margin-bottom:8px; }
+.wih { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+.wid { font-size:12px; font-weight:600; color:var(--accent); }
+.wit { font-size:11px; color:var(--muted); }
+.wie { font-size:11px; color:var(--muted); line-height:1.7; }
+.si { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px; margin-bottom:8px; }
+.sin { font-size:13px; font-weight:600; margin-bottom:8px; }
+.sr2 { display:flex; justify-content:space-between; font-size:11px; padding:3px 0; border-bottom:1px solid var(--border); }
+.sr2:last-child { border-bottom:none; }
+.sl2 { color:var(--muted); }
+.sv { font-weight:600; color:var(--accent); }
+.sum { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px; }
+.sumc { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px; text-align:center; }
+.sumn { font-size:22px; font-weight:700; color:var(--accent); font-family:var(--font-num); font-variant-numeric:tabular-nums; text-shadow:0 0 10px rgba(232,255,71,.3); }
+.suml { font-size:10px; color:var(--muted); text-transform:uppercase; margin-top:2px; }
+.empty { text-align:center; color:var(--muted); font-size:13px; padding:40px 0; }
+.sect { font-size:11px; color:var(--muted); text-transform:uppercase; font-weight:700; margin:16px 0 8px; }
+
+/* ---------- YÖNET SAYFASI ---------- */
+.mrow { display:flex; gap:6px; margin-bottom:12px; }
+.mrow .inp { flex:1; }
+.btn { padding:10px 14px; border:none; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; }
+.pri { background:var(--accent); color:#000; }
+.ghost { background:var(--surface2); color:var(--text); border:1px solid var(--border); }
+.dngr { background:rgba(248,113,113,.12); color:var(--red); border:1px solid rgba(248,113,113,.3); }
+.mw { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px; margin-bottom:10px; }
+.mw.active { border-color:var(--accent); }
+.mwh { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+.mwn { font-size:14px; font-weight:700; }
+.mwn .tag { vertical-align:middle; margin-left:6px; }
+.mwb { display:flex; gap:4px; }
+.icb { width:32px; height:32px; border:1px solid var(--border); border-radius:6px; background:var(--surface2); color:var(--text); font-size:13px; cursor:pointer; }
+.mex { display:flex; justify-content:space-between; align-items:center; padding:7px 0; border-bottom:1px solid var(--border); gap:6px; }
+.mex:last-of-type { border-bottom:none; }
+.mexn { font-size:12px; font-weight:600; flex:1; min-width:0; }
+.mexm { font-size:10px; color:var(--muted); }
+.addex { width:100%; margin-top:8px; padding:10px; border:1px dashed var(--border); border-radius:8px; background:none; color:var(--accent); font-size:11px; font-weight:600; cursor:pointer; }
+
+/* ---------- MODAL ---------- */
+.ovl { position:fixed; inset:0; background:rgba(0,0,0,.75); display:none; align-items:flex-end; justify-content:center; z-index:200; }
+.ovl.open { display:flex; }
+.modal { background:var(--surface); border:1px solid var(--border); border-radius:16px 16px 0 0; padding:16px; width:100%; max-width:500px; max-height:88vh; overflow-y:auto; }
+.mt { font-size:15px; font-weight:700; margin-bottom:14px; }
+.fld { margin-bottom:10px; }
+.fld label { display:block; font-size:10px; color:var(--muted); text-transform:uppercase; margin-bottom:4px; }
+.row2 { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.mbtns { display:flex; gap:8px; margin-top:14px; }
+.mbtns .btn { flex:1; padding:13px; }
+
+/* ---------- ALT BAR ---------- */
+.bot { position:fixed; bottom:0; left:0; right:0; background:var(--surface); border-top:1px solid var(--border); padding:10px 16px; display:flex; justify-content:space-between; align-items:center; z-index:100; }
+.bl { font-size:10px; color:var(--muted); }
+.bv { font-size:13px; font-weight:700; color:var(--accent); }
+.swb { padding:10px 14px; background:var(--accent); color:#000; border:none; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hdr">
+    <div><div class="hdr-t">💪 Antrenman</div><div class="hdr-s" id="dt"></div></div>
+    <select class="wsel" id="wsel"></select>
+  </div>
+  <div class="tabs">
+    <div class="tab on" onclick="showTab('w')">Antrenman</div>
+    <div class="tab" onclick="showTab('h')">Geçmiş</div>
+    <div class="tab" onclick="showTab('s')">İstatistik</div>
+    <div class="tab" onclick="showTab('k')">Kardiyo</div>
+    <div class="tab" onclick="showTab('m')">Yönet</div>
+  </div>
+
+  <div id="page-w" class="page on">
+    <div class="timers">
+      <div class="tc">
+        <div class="tl">Antrenman</div>
+        <div class="td" id="wtime">0:00</div>
+        <div class="tbs"><div class="tb" onclick="togW()">▶ / ⏸</div><div class="tb" onclick="rstW()">↺</div></div>
+      </div>
+      <div class="tc">
+        <div class="tl">Dinlenme (<span id="rl">90</span>sn)</div>
+        <div class="td" id="rtime">1:30</div>
+        <input type="range" min="30" max="180" step="5" value="90" class="slider" id="rslider" oninput="setR(this.value)">
+        <div class="tbs"><div class="tb" onclick="startR()">Başla</div><div class="tb" onclick="rstR()">↺</div></div>
+      </div>
+    </div>
+    <div class="cal-bar">
+      <div><div class="cal-lbl">Toplam Yakılan</div><div style="font-size:10px;color:var(--muted)">Tamamlanan setler</div></div>
+      <div><div class="cal-num" id="totcal">0</div><div style="font-size:10px;color:var(--muted);text-align:right">kcal</div></div>
+    </div>
+    <div class="prog"><strong>Double Progression:</strong> Tüm setlerde hedef tekrarı tamamlarsan → sonraki seansta 2.5 kg artır.</div>
+    <div id="exlist"></div>
+    <button class="fin" onclick="finishWorkout()">✓ Antrenmanı Tamamla ve Kaydet</button>
+  </div>
+
+  <div id="page-h" class="page"><div id="hc"></div></div>
+  <div id="page-s" class="page"><div id="sc"></div></div>
+  <div id="page-k" class="page"><div id="kc"></div></div>
+  <div id="page-m" class="page"><div id="mc"></div></div>
+</div>
+
+<div class="bot">
+  <div><div class="bl">Sıradaki Antrenman</div><div class="bv" id="ns">—</div></div>
+  <button class="swb" onclick="cycleWorkout()">Değiştir</button>
+</div>
+
+<!-- HAREKET EKLE / DÜZENLE MODALI -->
+<div class="ovl" id="ovl">
+  <div class="modal">
+    <div class="mt" id="mtitle">Hareket Ekle</div>
+    <div class="fld"><label>Hareket adı *</label><input id="f-name" class="inp" placeholder="Örn: Incline Press"></div>
+    <div class="fld"><label>Kas grupları (virgülle ayır)</label><input id="f-muscles" class="inp" placeholder="Göğüs, Triceps"></div>
+    <div class="row2">
+      <div class="fld"><label>Başlangıç ağırlığı (kg)</label><input id="f-weight" type="number" inputmode="decimal" class="inp" placeholder="0 = vücut ağırlığı"></div>
+      <div class="fld"><label>Hedef tekrar</label><input id="f-reps" type="number" inputmode="numeric" class="inp" placeholder="12"></div>
+    </div>
+    <div class="row2">
+      <div class="fld"><label>Set sayısı</label><input id="f-sets" type="number" inputmode="numeric" class="inp" placeholder="3"></div>
+      <div class="fld"><label>Set başı kalori (opsiyonel)</label><input id="f-cal" type="number" inputmode="numeric" class="inp" placeholder="Boş = otomatik"></div>
+    </div>
+    <div class="fld"><label>Video linki</label><input id="f-video" class="inp" placeholder="https://..."></div>
+    <div class="fld"><label>Not / alternatif</label><input id="f-note" class="inp" placeholder="Alt: Dumbbell press"></div>
+    <div class="mbtns">
+      <button class="btn ghost" onclick="closeModal()">Vazgeç</button>
+      <button class="btn pri" onclick="saveExModal()">Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* =========================================================
+   SABİTLER
+   ========================================================= */
+const LS_STATE   = 'fittrack_state_v2';
+const LS_SESSION = 'fittrack_session_v2';
+const DEFAULT_MET = 4;
+const MET = {bench_press:5,lat_pulldown:4.5,cable_row_a:4.5,biceps_curl_a:3.5,leg_press_a:5,plank_a:4,shoulder_press:4.5,lateral_raise:3,incline_press:5,triceps_pushdown:3.5,hammer_curl:3.5,leg_curl:4.5,roman_chair:4,plank_b:4};
+
+/* =========================================================
+   YARDIMCILAR
+   ========================================================= */
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+function esc(s){ return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+// parseFloat boş girişte NaN döndürür (null değil!) — ?? çalışmaz. Bu yüzden num() şart.
+function num(v, fallback){ const n = parseFloat(v); return isNaN(n) ? fallback : n; }
+function inum(v, fallback){ const n = parseInt(v, 10); return isNaN(n) ? fallback : n; }
+function todayStr(){ return new Date().toLocaleDateString('tr-TR'); }
+function nowTimeStr(){ return new Date().toLocaleTimeString('tr-TR', { hour:'2-digit', minute:'2-digit' }); }
+
+/* =========================================================
+   VARSAYILAN VERİ (mevcut A/B programı)
+   ========================================================= */
+function seedDefaults(){
+  const exA = [
+    {id:'bench_press',   name:'Chest Press (Makine)',        note:'Alt: Dumbbell bench press',       muscles:['Göğüs','Triceps'],   sets:3, reps:12, weight:20,  calPerSet:null, video:'https://www.youtube.com/results?search_query=chest+press+machine+form'},
+    {id:'lat_pulldown',  name:'Lat Pulldown',                note:'Geniş tutuş, önden çek',          muscles:['Sırt','Biceps'],     sets:3, reps:12, weight:26,  calPerSet:null, video:'https://www.youtube.com/results?search_query=lat+pulldown+form'},
+    {id:'cable_row_a',   name:'Kablo Rowing',                note:'Alt: Dumbbell row',               muscles:['Orta Sırt','Biceps'],sets:3, reps:12, weight:26,  calPerSet:null, video:'https://www.youtube.com/results?search_query=seated+cable+row+form'},
+    {id:'biceps_curl_a', name:'Dumbbell Biceps Curl',        note:'Alt: Kablo curl',                 muscles:['Biceps'],            sets:3, reps:12, weight:7.5, calPerSet:null, video:'https://www.youtube.com/results?search_query=dumbbell+curl+form'},
+    {id:'leg_press_a',   name:'Leg Press',                   note:'Hafif ağırlık, yüksek tekrar',    muscles:['Quadriceps','Hamstring'], sets:2, reps:15, weight:100, calPerSet:null, video:'https://www.youtube.com/results?search_query=leg+press+form'},
+    {id:'plank_a',       name:'Plank',                       note:'Ön plank, dirsek üstünde',        muscles:['Core'],              sets:3, reps:30, weight:0,   calPerSet:null, video:'https://www.youtube.com/results?search_query=plank+form'}
+  ];
+  const exB = [
+    {id:'shoulder_press',   name:'Dumbbell Omuz Press',      note:'Alt: Smith Machine overhead',     muscles:['Omuz','Triceps'],    sets:3, reps:12, weight:14, calPerSet:null, video:'https://www.youtube.com/results?search_query=dumbbell+shoulder+press+form'},
+    {id:'lateral_raise',    name:'Lateral Raise',            note:'Alt: Kablo lateral raise',        muscles:['Yan Omuz'],          sets:3, reps:15, weight:8,  calPerSet:null, video:'https://www.youtube.com/results?search_query=lateral+raise+form'},
+    {id:'incline_press',    name:'İncline Dumbbell Press',   note:'Alt: İncline makine press',       muscles:['Üst Göğüs'],         sets:3, reps:12, weight:16, calPerSet:null, video:'https://www.youtube.com/results?search_query=incline+dumbbell+press+form'},
+    {id:'triceps_pushdown', name:'Triceps Pushdown',         note:'Alt: Dumbbell kickback',          muscles:['Triceps'],           sets:3, reps:12, weight:20, calPerSet:null, video:'https://www.youtube.com/results?search_query=triceps+pushdown+form'},
+    {id:'hammer_curl',      name:'Hammer Curl',              note:'Çekiç tutuş',                     muscles:['Biceps','Ön Kol'],   sets:3, reps:12, weight:10, calPerSet:null, video:'https://www.youtube.com/results?search_query=hammer+curl+form'},
+    {id:'leg_curl',         name:'Leg Curl (Hamstring)',     note:'Alt: Romanian deadlift',          muscles:['Hamstring'],         sets:2, reps:15, weight:30, calPerSet:null, video:'https://www.youtube.com/results?search_query=leg+curl+form'},
+    {id:'roman_chair',      name:'Roman Chair (Hyperextension)', note:'45 derece açılı alet',        muscles:['Alt Sırt','Kalça'],  sets:3, reps:12, weight:0,  calPerSet:null, video:'https://www.youtube.com/results?search_query=hyperextension+form'},
+    {id:'plank_b',          name:'Yan Plank',                note:'Her iki taraf',                   muscles:['Yan Core'],          sets:3, reps:20, weight:0,  calPerSet:null, video:'https://www.youtube.com/results?search_query=side+plank+form'}
+  ];
+  const exercises = {};
+  [...exA, ...exB].forEach(e => exercises[e.id] = e);
+  const wA = { id:'w_a', name:'Seans A', exerciseIds: exA.map(e=>e.id) };
+  const wB = { id:'w_b', name:'Seans B', exerciseIds: exB.map(e=>e.id) };
+  return {
+    version: 2,
+    workouts: [wA, wB],
+    exercises,
+    logs: [],
+    cardioLog: [],
+    settings: { activeWorkoutId:'w_a', restSeconds:90, bodyWeightKg:125 }
+  };
+}
+
+/* =========================================================
+   STATE + LOCALSTORAGE (okuma / yazma / migrasyon)
+   ========================================================= */
+let state = null;    // kalıcı veri: workouts, exercises, logs, settings
+let session = null;  // devam eden antrenman: { workoutId, data:{exId:{weight,reps,setsDone,note}} }
+
+function saveState(){ localStorage.setItem(LS_STATE, JSON.stringify(state)); }
+function saveSession(){ localStorage.setItem(LS_SESSION, JSON.stringify(session)); }
+
+// JSON.parse bozuk veride hata fırlatır ve tüm uygulamayı çökertir — bu sarmalayıcı onu engeller
+function safeParse(raw){
+  try { return JSON.parse(raw); } catch(e) { return undefined; }
+}
+// Verinin iskeletinin doğru olduğunu kontrol eder (hem kayıtlı veri hem içe aktarma için)
+function isValidState(s){
+  return !!(s && Array.isArray(s.workouts) && s.workouts.length &&
+            s.exercises && typeof s.exercises === 'object' &&
+            Array.isArray(s.logs) && s.settings && s.settings.activeWorkoutId);
+}
+
+function loadState(){
+  const raw = localStorage.getItem(LS_STATE);
+  if (raw) {
+    const parsed = safeParse(raw);
+    if (isValidState(parsed)) {
+      state = parsed;
+      if (!Array.isArray(state.cardioLog)) state.cardioLog = [];   // eski veride bu alan yoktu, ekle
+      return;
+    }
+    // Veri bozuk: SİLMEDEN yedek anahtara taşı, kullanıcıya bildir, temiz veriyle devam et
+    const backupKey = LS_STATE + '_bozuk_yedek_' + Date.now();
+    localStorage.setItem(backupKey, raw);
+    alert('Kayıtlı veri bozuk görünüyor.\nBozuk hali "' + backupKey + '" anahtarına yedeklendi (silinmedi).\nUygulama temiz veriyle açılıyor.');
+  }
+  state = seedDefaults();
+  migrateOldData();       // eski sürümden veri varsa taşı
+  saveState();
+}
+
+// Eski uygulamanın 'wh' (geçmiş) ve 'cur' (aktif seans) anahtarlarını yeni yapıya çevirir
+function migrateOldData(){
+  try {
+    const oldH = JSON.parse(localStorage.getItem('wh') || '[]');
+    oldH.forEach(rec => {
+      const wId = rec.session === 'B' ? 'w_b' : 'w_a';
+      const entries = {};
+      Object.keys(rec.ex || {}).forEach(exId => {
+        const d = rec.ex[exId];
+        const exDef = state.exercises[exId];
+        entries[exId] = {
+          name: exDef ? exDef.name : exId,
+          weight: num(d.weight, null),
+          reps: inum(d.reps, null),
+          setsDone: Array.isArray(d.sets) ? d.sets.map(Boolean) : [],
+          note: d.note || '',
+          calories: d.calories || 0
+        };
+      });
+      state.logs.push({
+        id: uid(), date: rec.date, ts: 0,
+        workoutId: wId, workoutName: 'Seans ' + (rec.session || 'A'),
+        duration: rec.duration || 0, totalCalories: rec.totalCalories || 0,
+        entries
+      });
+    });
+    const oldCur = localStorage.getItem('cur');
+    if (oldCur === 'B') state.settings.activeWorkoutId = 'w_b';
+  } catch(e) { /* eski veri bozuksa sessizce atla */ }
+}
+
+function loadSession(){
+  const parsed = safeParse(localStorage.getItem(LS_SESSION));
+  // Bozuksa, yapısı eksikse veya aktif antrenman değişmişse sıfırla
+  if (parsed && parsed.data && parsed.workoutId === state.settings.activeWorkoutId) {
+    session = parsed;
+  } else resetSession();
+}
+function resetSession(){
+  session = { workoutId: state.settings.activeWorkoutId, data: {} };
+  saveSession();
+}
+function entry(exId){
+  if (!session.data[exId]) session.data[exId] = { setsDone: [], note: '' };
+  return session.data[exId];
+}
+
+/* =========================================================
+   ERİŞİM YARDIMCILARI
+   ========================================================= */
+function activeW(){
+  return state.workouts.find(w => w.id === state.settings.activeWorkoutId) || state.workouts[0];
+}
+function nextW(){
+  const i = state.workouts.findIndex(w => w.id === activeW().id);
+  return state.workouts[(i + 1) % state.workouts.length];
+}
+function wExercises(w){
+  return w.exerciseIds.map(id => state.exercises[id]).filter(Boolean);
+}
+
+/* =========================================================
+   KALORİ HESAPLAMA
+   Manuel kalori girilmişse onu kullanır; yoksa MET tahmini yapar.
+   ========================================================= */
+function calPerSet(ex, w, r){
+  if (ex.calPerSet && ex.calPerSet > 0) return Math.round(ex.calPerSet);
+  const met = MET[ex.id] || DEFAULT_MET;
+  const reps = num(r, ex.reps) || 12;
+  const durationSec = reps * 3;                     // her tekrar ~3 sn
+  const base = met * (state.settings.bodyWeightKg || 75) * (durationSec / 3600);
+  const bonus = base * (num(w, 0) / 200);           // ağırlık bonusu
+  return Math.max(1, Math.round(base + bonus));
+}
+function sessionTotalCal(){
+  let t = 0;
+  wExercises(activeW()).forEach(ex => {
+    const en = session.data[ex.id];
+    if (!en || !en.setsDone) return;
+    const w = num(en.weight, lastWeight(ex.id) ?? ex.weight);
+    const r = num(en.reps, ex.reps);
+    const c = calPerSet(ex, w, r);
+    en.setsDone.forEach(d => { if (d) t += c; });
+  });
+  return t;
+}
+
+/* =========================================================
+   GEÇMİŞ SORGULARI
+   ========================================================= */
+// limit = null → TÜM geçmiş (istatistik için); limit = 5 → son 5 kayıt (kart içi görünüm için)
+function exHistory(exId, limit = null){
+  let arr = state.logs
+    .filter(l => l.entries && l.entries[exId])
+    .map(l => ({ date: l.date, time: l.time || '', ...l.entries[exId] }));
+  if (limit) arr = arr.slice(-limit);
+  return arr.reverse();
+}
+function lastWeight(exId){
+  const h = exHistory(exId, 1);
+  return h.length ? num(h[0].weight, null) : null;
+}
+
+/* =========================================================
+   WORKOUT EKLEME / DÜZENLEME / SİLME
+   ========================================================= */
+function addWorkout(){
+  const inp = document.getElementById('new-w-name');
+  const name = (inp.value || '').trim();
+  if (!name) { alert('Antrenman adı gir.'); return; }
+  state.workouts.push({ id: uid(), name, exerciseIds: [] });
+  inp.value = '';
+  saveState(); renderManage(); renderHeader();
+}
+function renameWorkout(wId){
+  const w = state.workouts.find(x => x.id === wId); if (!w) return;
+  const name = prompt('Yeni ad:', w.name);
+  if (name && name.trim()) { w.name = name.trim(); saveState(); renderManage(); renderHeader(); }
+}
+function deleteWorkout(wId){
+  if (state.workouts.length <= 1) { alert('En az bir antrenman kalmalı.'); return; }
+  const w = state.workouts.find(x => x.id === wId); if (!w) return;
+  if (!confirm(`"${w.name}" silinsin mi? (Geçmiş kayıtlar silinmez)`)) return;
+  w.exerciseIds.forEach(id => delete state.exercises[id]);
+  state.workouts = state.workouts.filter(x => x.id !== wId);
+  if (state.settings.activeWorkoutId === wId) {
+    state.settings.activeWorkoutId = state.workouts[0].id;
+    resetSession(); rstW();
+  }
+  saveState(); renderAll();
+}
+function setActiveWorkout(wId){
+  if (wId === state.settings.activeWorkoutId) return;
+  const hasDone = Object.values(session.data).some(e => e.setsDone && e.setsDone.some(Boolean));
+  if (hasDone && !confirm('Devam eden seanstaki setler silinecek. Antrenman değiştirilsin mi?')) {
+    renderHeader(); return;
+  }
+  state.settings.activeWorkoutId = wId;
+  resetSession(); rstW();
+  saveState(); renderAll();
+}
+function cycleWorkout(){ setActiveWorkout(nextW().id); }
+
+/* =========================================================
+   EXERCISE EKLEME / DÜZENLEME / SİLME (modal)
+   ========================================================= */
+let modalCtx = { workoutId: null, exId: null };
+
+function openExModal(wId, exId){
+  modalCtx = { workoutId: wId, exId };
+  const ex = exId ? state.exercises[exId] : null;
+  document.getElementById('mtitle').textContent = ex ? 'Hareketi Düzenle' : 'Hareket Ekle';
+  document.getElementById('f-name').value    = ex ? ex.name : '';
+  document.getElementById('f-muscles').value = ex ? (ex.muscles || []).join(', ') : '';
+  document.getElementById('f-weight').value  = ex ? ex.weight : '';
+  document.getElementById('f-reps').value    = ex ? ex.reps : '';
+  document.getElementById('f-sets').value    = ex ? ex.sets : '';
+  document.getElementById('f-cal').value     = ex && ex.calPerSet ? ex.calPerSet : '';
+  document.getElementById('f-video').value   = ex ? (ex.video || '') : '';
+  document.getElementById('f-note').value    = ex ? (ex.note || '') : '';
+  document.getElementById('ovl').classList.add('open');
+}
+function closeModal(){ document.getElementById('ovl').classList.remove('open'); }
+
+function saveExModal(){
+  const name = document.getElementById('f-name').value.trim();
+  if (!name) { alert('Hareket adı zorunlu.'); return; }
+  const data = {
+    name,
+    muscles: document.getElementById('f-muscles').value.split(',').map(s => s.trim()).filter(Boolean),
+    weight: num(document.getElementById('f-weight').value, 0),
+    reps:   inum(document.getElementById('f-reps').value, 12),
+    sets:   Math.min(10, Math.max(1, inum(document.getElementById('f-sets').value, 3))),
+    calPerSet: num(document.getElementById('f-cal').value, null),
+    video:  document.getElementById('f-video').value.trim(),
+    note:   document.getElementById('f-note').value.trim()
+  };
+  const isNew = !modalCtx.exId;
+  if (!isNew) {
+    Object.assign(state.exercises[modalCtx.exId], data);
+  } else {
+    const id = uid();
+    state.exercises[id] = { id, ...data };
+    const w = state.workouts.find(x => x.id === modalCtx.workoutId);
+    if (w) w.exerciseIds.push(id);
+  }
+  saveState(); closeModal(); renderAll();
+  // Yeni hareket AKTİF antrenmana eklendiyse doğrudan antrenman ekranına dön
+  if (isNew && modalCtx.workoutId === state.settings.activeWorkoutId) showTab('w');
+}
+function deleteExercise(wId, exId){
+  const ex = state.exercises[exId]; if (!ex) return;
+  if (!confirm(`"${ex.name}" silinsin mi?`)) return;
+  const w = state.workouts.find(x => x.id === wId);
+  if (w) w.exerciseIds = w.exerciseIds.filter(id => id !== exId);
+  delete state.exercises[exId];
+  delete session.data[exId];
+  saveState(); saveSession(); renderAll();
+}
+function moveExercise(wId, exId, dir){
+  const w = state.workouts.find(x => x.id === wId); if (!w) return;
+  const i = w.exerciseIds.indexOf(exId);
+  const j = i + dir;
+  if (i < 0 || j < 0 || j >= w.exerciseIds.length) return;
+  [w.exerciseIds[i], w.exerciseIds[j]] = [w.exerciseIds[j], w.exerciseIds[i]];
+  saveState(); renderManage(); renderWorkoutPage();
+}
+
+/* =========================================================
+   SET TAMAMLAMA / SET SAYISI / ALAN GÜNCELLEME
+   ========================================================= */
+function togSet(exId, j){
+  const en = entry(exId);
+  en.setsDone[j] = !en.setsDone[j];
+  saveSession();
+  rerenderCard(exId);
+  updateTotalCal();
+  if (en.setsDone[j]) startR();
+}
+function adjSets(exId, delta){
+  const ex = state.exercises[exId]; if (!ex) return;
+  const newSets = Math.min(10, Math.max(1, (ex.sets || 1) + delta));
+  if (newSets === ex.sets) return;
+  const en = entry(exId);
+  // Azaltırken silinecek aralıkta tamamlanmış set varsa önce onay al
+  if (newSets < ex.sets && en.setsDone.slice(newSets).some(Boolean)) {
+    if (!confirm('Silinecek setler arasında tamamlanmış set var. Yine de azaltılsın mı?')) return;
+  }
+  ex.sets = newSets;
+  if (en.setsDone.length > ex.sets) en.setsDone.length = ex.sets;
+  saveState(); saveSession();
+  rerenderCard(exId);
+  updateTotalCal();
+}
+function onField(exId, field, val){
+  entry(exId)[field] = val;
+  saveSession();
+  updateCardCals(exId);
+}
+function togHist(exId){ document.getElementById('hist-' + exId)?.classList.toggle('open'); }
+
+/* =========================================================
+   ANTRENMANI TAMAMLA (geçmiş kaydı)
+   ========================================================= */
+function finishWorkout(){
+  const w = activeW();
+  const exs = wExercises(w);
+  const completed = exs.filter(ex => entry(ex.id).setsDone.some(Boolean));
+  if (!completed.length) { alert('Hiç set tamamlamadın!'); return; }
+
+  const totalCal = sessionTotalCal();
+  const mins = Math.floor(wElapsed() / 60);
+  const entries = {};
+  let totalSets = 0;
+  exs.forEach(ex => {
+    const en = session.data[ex.id];
+    if (!en) return;
+    const setCount = (en.setsDone || []).filter(Boolean).length;
+    if (setCount === 0) return;   // hiç set tamamlanmadıysa bu hareket log'a YAZILMAZ
+    totalSets += setCount;
+    const wVal = num(en.weight, lastWeight(ex.id) ?? ex.weight);
+    const rVal = num(en.reps, ex.reps);
+    entries[ex.id] = {
+      name: ex.name,
+      weight: wVal, reps: rVal,
+      setsDone: en.setsDone.map(Boolean),
+      note: en.note || '',
+      calories: setCount * calPerSet(ex, wVal, rVal)
+    };
+  });
+
+  state.logs.push({
+    id: uid(), date: todayStr(), time: nowTimeStr(), ts: Date.now(),
+    workoutId: w.id, workoutName: w.name,
+    duration: mins, totalCalories: totalCal, entries
+  });
+
+  // sıradaki antrenmana geç
+  state.settings.activeWorkoutId = nextW().id;
+  saveState();
+  resetSession(); rstW();
+  alert(`✓ ${w.name} kaydedildi!\n────────────\nSüre: ${mins} dk\nHareket: ${completed.length}\nTamamlanan set: ${totalSets}\nToplam kalori: ${totalCal} kcal\n────────────\nSıradaki: ${activeW().name}`);
+  renderAll();
+}
+function deleteLog(logId){
+  if (!confirm('Bu antrenman kaydı silinsin mi?')) return;
+  state.logs = state.logs.filter(l => l.id !== logId);
+  saveState(); renderHistory(); 
+}
+
+/* =========================================================
+   VERİ YEDEKLEME / GERİ YÜKLEME
+   ========================================================= */
+function exportData(){
+  const json = JSON.stringify(state, null, 2);
+  const area = document.getElementById('io-area');
+  if (area) area.value = json;   // indirme başarısız olsa bile kopyalanabilsin
+  try {
+    const blob = new Blob([json], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'antrenman-yedek-' + new Date().toISOString().slice(0, 10) + '.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  } catch(e) {
+    alert('Dosya indirilemedi ama JSON aşağıdaki kutuya yazıldı — oradan kopyalayabilirsin.');
+  }
+}
+function applyImport(raw){
+  const parsed = safeParse(raw);
+  if (!isValidState(parsed)) { alert('Geçersiz yedek: JSON okunamadı veya yapı hatalı.'); return; }
+  if (!confirm('Mevcut veri, içe aktarılan yedekle DEĞİŞTİRİLECEK.\n(Mevcut halin yedek anahtara kopyalanır, silinmez)\nDevam edilsin mi?')) return;
+  localStorage.setItem(LS_STATE + '_onceki_' + Date.now(), JSON.stringify(state));
+  state = parsed;
+  // Yedekteki aktif antrenman id'si listede yoksa ilk antrenmana düş
+  if (!state.workouts.some(w => w.id === state.settings.activeWorkoutId)) {
+    state.settings.activeWorkoutId = state.workouts[0].id;
+  }
+  saveState();
+  resetSession(); rstW();
+  // dinlenme ayarını yeni veriden yükle
+  rt = state.settings.restSeconds || 90; rs = rt;
+  document.getElementById('rslider').value = rt;
+  document.getElementById('rl').textContent = rt;
+  updRD();
+  renderAll();
+  alert('✓ Yedek içe aktarıldı.');
+}
+function importFromArea(){
+  const raw = (document.getElementById('io-area').value || '').trim();
+  if (!raw) { alert('Önce kutuya JSON yapıştır.'); return; }
+  applyImport(raw);
+}
+function importFromFile(input){
+  const file = input.files && input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => applyImport(String(reader.result || ''));
+  reader.readAsText(file);
+  input.value = '';
+}
+
+/* =========================================================
+   ZAMANLAYICILAR
+   Saat damgası (timestamp) bazlı çalışır: saniye saymak yerine
+   "ne zaman başladı" bilgisini saklar, süreyi her seferinde
+   şu anki saatten çıkararak hesaplar. Böylece telefon uygulamayı
+   arka planda durdursa bile (setInterval duraklasa bile) geri
+   dönüldüğünde süre YANLIŞ değil, DOĞRU gösterilir.
+   ========================================================= */
+const LS_TIMER = 'fittrack_timer_v2';
+let rt = 90;                    // dinlenme hedef süresi (sn) — ayardan gelir
+let wi = null, ri = null;       // interval id'leri (sadece EKRANI güncellemek için)
+let timer = { wRunning:false, wBase:0, wStartTs:null, rRunning:false, rEndTs:null };
+
+function saveTimer(){ localStorage.setItem(LS_TIMER, JSON.stringify(timer)); }
+function loadTimer(){ const t = safeParse(localStorage.getItem(LS_TIMER)); if (t) timer = Object.assign(timer, t); }
+
+function fmt(sec){ const m = Math.floor(sec/60), s = sec % 60; return `${m}:${s.toString().padStart(2,'0')}`; }
+
+function wElapsed(){
+  return timer.wBase + ((timer.wRunning && timer.wStartTs) ? Math.floor((Date.now() - timer.wStartTs) / 1000) : 0);
+}
+function tickW(){ const el = document.getElementById('wtime'); if (el) el.textContent = fmt(wElapsed()); }
+function togW(){
+  if (timer.wRunning) {
+    timer.wBase = wElapsed(); timer.wRunning = false; timer.wStartTs = null;
+    clearInterval(wi); wi = null;
+  } else {
+    timer.wRunning = true; timer.wStartTs = Date.now();
+    wi = setInterval(tickW, 1000);
+  }
+  saveTimer(); tickW();
+}
+function rstW(){
+  clearInterval(wi); wi = null;
+  timer.wRunning = false; timer.wBase = 0; timer.wStartTs = null;
+  saveTimer();
+  const el = document.getElementById('wtime'); if (el) el.textContent = '0:00';
+}
+
+function rRemaining(){ return timer.rEndTs ? Math.max(0, Math.round((timer.rEndTs - Date.now()) / 1000)) : rt; }
+function setR(v){
+  rt = parseInt(v, 10);
+  document.getElementById('rl').textContent = v;
+  state.settings.restSeconds = rt; saveState();
+  if (!timer.rRunning) updRD(rt);
+}
+function tickR(){
+  const rem = rRemaining();
+  updRD(rem);
+  if (rem <= 0 && timer.rRunning) {
+    clearInterval(ri); ri = null;
+    timer.rRunning = false; timer.rEndTs = null;
+    saveTimer(); bell();
+  }
+}
+function startR(){
+  clearInterval(ri);
+  timer.rRunning = true; timer.rEndTs = Date.now() + rt * 1000;
+  saveTimer();
+  ri = setInterval(tickR, 1000);
+  tickR();
+}
+function rstR(){
+  clearInterval(ri); ri = null;
+  timer.rRunning = false; timer.rEndTs = null;
+  saveTimer(); updRD(rt);
+}
+function updRD(sec){ document.getElementById('rtime').textContent = fmt(sec === undefined ? rRemaining() : sec); }
+
+// Uygulama arka plandan öne dönünce sayaçları anında doğru değere senkronla.
+// Dinlenme süresi arka plandayken dolduysa, öne döner dönmez zili çal.
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState !== 'visible') return;
+  if (timer.wRunning) tickW();
+  if (timer.rRunning) tickR();
+});
+function bell(){
+  try {
+    const c = new (window.AudioContext || window.webkitAudioContext)();
+    [0, .15, .3].forEach(d => {
+      const o = c.createOscillator(), g = c.createGain();
+      o.connect(g); g.connect(c.destination);
+      o.frequency.value = 880;
+      g.gain.setValueAtTime(.3, c.currentTime + d);
+      g.gain.exponentialRampToValueAtTime(.01, c.currentTime + d + .4);
+      o.start(c.currentTime + d); o.stop(c.currentTime + d + .4);
+    });
+  } catch(e) {}
+}
+
+/* =========================================================
+   RENDER — ANTRENMAN SAYFASI
+   ========================================================= */
+function cardHTML(ex, i, wId){
+  const en = session.data[ex.id] || { setsDone: [] };
+  const lw = lastWeight(ex.id);
+  const startW = lw !== null ? lw : ex.weight;
+  const bw = num(ex.weight, 0) === 0;                       // vücut ağırlığı hareketi
+  const curW = num(en.weight, startW);
+  const curR = num(en.reps, ex.reps);
+  const c = calPerSet(ex, curW, curR);
+  const doneCount = (en.setsDone || []).filter(Boolean).length;
+  const allDone = doneCount === ex.sets;
+  const exCal = doneCount * c;
+  const manual = ex.calPerSet && ex.calPerSet > 0;
+
+  const hist = exHistory(ex.id, 5);   // kartta sadece son 5 gösterilir
+  const histH = hist.length === 0
+    ? '<div class="hempty">Henüz kayıt yok</div>'
+    : hist.map(h => {
+        const sc = h.setsDone ? h.setsDone.filter(Boolean).length : '?';
+        return `<div class="he"><span class="hd">${esc(h.date)}</span><span class="hv">${h.weight ?? '—'}kg × ${h.reps ?? '?'}tk × ${sc}set${h.calories ? ' · ' + h.calories + 'kcal' : ''}</span></div>`;
+      }).join('');
+
+  let setsH = '';
+  for (let j = 0; j < ex.sets; j++) {
+    const sd = en.setsDone && en.setsDone[j];
+    setsH += `<div class="sr"><span class="sl">Set ${j+1}</span><div class="sb${sd ? ' on' : ''}" onclick="togSet('${ex.id}',${j})">${sd ? '✓ Tamamlandı' : 'Tamamla'}</div><span class="sc">${sd ? '+' : ''}${c} kcal</span></div>`;
+  }
+
+  return `<div class="card${allDone ? ' done' : ''}" id="card-${ex.id}">
+    <div class="ch">
+      <div class="cnum">${allDone ? '✓' : i + 1}</div>
+      <div class="ci">
+        <div class="cn">${esc(ex.name)}</div>
+        ${ex.note ? `<div class="ca">${esc(ex.note)}</div>` : ''}
+        <div class="ctags">
+          ${(ex.muscles || []).map(m => `<span class="tag tm">${esc(m)}</span>`).join('')}
+          ${!bw ? `<span class="tag ts">Başlangıç: ${startW}kg</span>` : ''}
+          <span class="tag tp">${ex.sets}×${ex.reps}</span>
+          ${manual ? '<span class="tag tk">kcal: manuel</span>' : ''}
+        </div>
+      </div>
+      <div class="cbox"><div class="cbox-n">${exCal > 0 ? exCal : '—'}</div><div class="cbox-l">kcal</div></div>
+    </div>
+    <div class="vrow">
+      ${ex.video ? `<a href="${esc(ex.video)}" target="_blank" rel="noopener noreferrer" class="vlink">▶ Nasıl yapılır</a>` : '<span></span>'}
+      <button class="mini" onclick="openExModal('${wId}','${ex.id}')">✎ Düzenle</button>
+    </div>
+    ${!bw ? `<div class="inp-row">
+      <div class="ig"><label class="il">Ağırlık (kg)</label><input class="inp winp" type="number" inputmode="decimal" value="${en.weight ?? startW}" oninput="onField('${ex.id}','weight',this.value)"></div>
+      <div class="ig"><label class="il">Tekrar</label><input class="inp rinp" type="number" inputmode="numeric" value="${en.reps ?? ex.reps}" oninput="onField('${ex.id}','reps',this.value)"></div>
+    </div>` : `<div style="padding:8px 12px 0;font-size:11px;color:var(--muted)">Vücut ağırlığı — ${ex.reps} sn/tekrar</div>`}
+    <div class="sets">
+      <div class="sethdr"><span>Setler</span><div><button class="ib" onclick="adjSets('${ex.id}',-1)">−</button><button class="ib" onclick="adjSets('${ex.id}',1)">+</button></div></div>
+      ${setsH}
+    </div>
+    <div class="hist">
+      <div class="hl"><span>📊 Geçmiş</span><button class="htgl" onclick="togHist('${ex.id}')">Göster / Gizle</button></div>
+      <div class="hlist" id="hist-${ex.id}">${histH}</div>
+    </div>
+    <div class="note"><input class="noteinp" type="text" placeholder="Not..." value="${esc(en.note || '')}" onchange="onField('${ex.id}','note',this.value)"></div>
+  </div>`;
+}
+
+function renderWorkoutPage(){
+  const w = activeW();
+  const list = document.getElementById('exlist');
+  const exs = wExercises(w);
+  list.innerHTML = exs.length
+    ? exs.map((ex, i) => cardHTML(ex, i, w.id)).join('')
+    : `<div class="empty">Bu antrenmanda henüz hareket yok.<br><br><button class="btn pri" onclick="openExModal('${w.id}',null)">+ Hareket Ekle</button></div>`;
+  updateTotalCal();
+}
+
+function rerenderCard(exId){
+  const w = activeW();
+  const i = w.exerciseIds.indexOf(exId);
+  const card = document.getElementById('card-' + exId);
+  if (i < 0 || !card) return;
+  const wasOpen = document.getElementById('hist-' + exId)?.classList.contains('open');
+  card.outerHTML = cardHTML(state.exercises[exId], i, w.id);
+  if (wasOpen) document.getElementById('hist-' + exId)?.classList.add('open');
+}
+
+// Kartı yeniden kurmadan sadece kalori değerlerini günceller (input focus kaybolmasın)
+function updateCardCals(exId){
+  const ex = state.exercises[exId]; if (!ex) return;
+  const en = session.data[exId] || { setsDone: [] };
+  const card = document.getElementById('card-' + exId); if (!card) return;
+  const w = num(card.querySelector('.winp')?.value, num(en.weight, lastWeight(exId) ?? ex.weight));
+  const r = num(card.querySelector('.rinp')?.value, ex.reps);
+  const c = calPerSet(ex, w, r);
+  card.querySelectorAll('.sc').forEach((el, i) => {
+    const done = en.setsDone && en.setsDone[i];
+    el.textContent = (done ? '+' : '') + c + ' kcal';
+  });
+  const doneCount = (en.setsDone || []).filter(Boolean).length;
+  const cbox = card.querySelector('.cbox-n');
+  if (cbox) cbox.textContent = doneCount > 0 ? doneCount * c : '—';
+  updateTotalCal();
+}
+function updateTotalCal(){ document.getElementById('totcal').textContent = sessionTotalCal(); }
+
+/* =========================================================
+   RENDER — GEÇMİŞ SAYFASI
+   ========================================================= */
+function renderHistory(){
+  const el = document.getElementById('hc');
+  const logs = state.logs.slice().reverse();
+  if (!logs.length) { el.innerHTML = '<div class="empty">Henüz antrenman yok.</div>'; return; }
+  el.innerHTML = logs.map(l => {
+    const exl = Object.keys(l.entries || {}).map(exId => {
+      const d = l.entries[exId];
+      const sc = d.setsDone ? d.setsDone.filter(Boolean).length : 0;
+      if (!sc) return '';
+      return `${esc(d.name || exId)}: ${d.weight ?? '—'}kg × ${sc}set${d.calories ? ' (' + d.calories + 'kcal)' : ''}`;
+    }).filter(Boolean).join('<br>');
+    return `<div class="wi">
+      <div class="wih">
+        <span class="wid">${esc(l.date)}${l.time ? ' ' + esc(l.time) : ''} · ${esc(l.workoutName)}</span>
+        <span class="wit">${l.duration || '?'}dk · 🔥${l.totalCalories || 0}kcal <button class="mini" onclick="deleteLog('${l.id}')">🗑</button></span>
+      </div>
+      <div class="wie">${exl || '—'}</div>
+    </div>`;
+  }).join('');
+}
+
+/* =========================================================
+   RENDER — İSTATİSTİK SAYFASI
+   ========================================================= */
+function renderStats(){
+  const el = document.getElementById('sc');
+  const logs = state.logs;
+  if (!logs.length) { el.innerHTML = '<div class="empty">Henüz veri yok.</div>'; return; }
+
+  // genel özet
+  const totalW = logs.length;
+  const totalCal = logs.reduce((s, l) => s + (l.totalCalories || 0), 0);
+  const totalMin = logs.reduce((s, l) => s + (l.duration || 0), 0);
+  let totalSets = 0;
+  logs.forEach(l => Object.values(l.entries || {}).forEach(d => {
+    totalSets += d.setsDone ? d.setsDone.filter(Boolean).length : 0;
+  }));
+
+  let html = `<div class="sum">
+    <div class="sumc"><div class="sumn">${totalW}</div><div class="suml">Toplam Antrenman</div></div>
+    <div class="sumc"><div class="sumn">${totalCal}</div><div class="suml">Toplam kcal</div></div>
+    <div class="sumc"><div class="sumn">${totalSets}</div><div class="suml">Tamamlanan Set</div></div>
+    <div class="sumc"><div class="sumn">${totalMin}</div><div class="suml">Toplam Dakika</div></div>
+  </div>`;
+
+  // son 5 antrenman
+  const last5 = logs.slice(-5).reverse();
+  html += '<div class="sect">Son 5 Antrenman</div>';
+  html += last5.map(l => `<div class="wi"><div class="wih"><span class="wid">${esc(l.date)}${l.time ? ' ' + esc(l.time) : ''} · ${esc(l.workoutName)}</span><span class="wit">${l.duration || '?'}dk · ${l.totalCalories || 0}kcal</span></div></div>`).join('');
+
+  // egzersiz bazlı
+  html += '<div class="sect">Egzersiz Bazlı</div>';
+  const allIds = new Set();
+  logs.forEach(l => Object.keys(l.entries || {}).forEach(id => allIds.add(id)));
+  html += [...allIds].map(exId => {
+    const eh = exHistory(exId);
+    if (!eh.length) return '';
+    const name = state.exercises[exId]?.name || eh[0].name || exId;
+    const weights = eh.map(x => num(x.weight, NaN)).filter(w => !isNaN(w));
+    const maxW = weights.length ? Math.max(...weights) : '—';
+    const totC = eh.reduce((s, x) => s + (x.calories || 0), 0);
+    const totS = eh.reduce((s, x) => s + (x.setsDone ? x.setsDone.filter(Boolean).length : 0), 0);
+    return `<div class="si"><div class="sin">${esc(name)}</div>
+      <div class="sr2"><span class="sl2">Son ağırlık</span><span class="sv">${eh[0].weight ?? '—'} kg</span></div>
+      <div class="sr2"><span class="sl2">En yüksek</span><span class="sv">${maxW} kg</span></div>
+      <div class="sr2"><span class="sl2">Tamamlanan set</span><span class="sv">${totS}</span></div>
+      <div class="sr2"><span class="sl2">Toplam yakılan</span><span class="sv">${totC} kcal</span></div>
+      <div class="sr2"><span class="sl2">Seans sayısı</span><span class="sv">${eh.length}</span></div>
+      <div class="sr2"><span class="sl2">Son tarih</span><span class="sv">${esc(eh[0].date)}</span></div>
+    </div>`;
+  }).filter(Boolean).join('');
+
+  el.innerHTML = html;
+}
+
+/* =========================================================
+   KARDİYO (Yürüyüş) — ACSM yürüyüş metabolik denklemi
+   VO2(ml/kg/dk) = 0.1×hız(m/dk) + 1.8×hız(m/dk)×eğim(oran) + 3.5
+   kcal/dk = VO2 × kilo(kg) / 1000 × 5   (1 litre O2 ≈ 5 kcal)
+   ========================================================= */
+function walkKcal(weightKg, speedKmh, inclinePct, minutes){
+  const speedMmin = speedKmh * 1000 / 60;
+  const grade = inclinePct / 100;
+  const vo2 = 0.1 * speedMmin + 1.8 * speedMmin * grade + 3.5;
+  const kcalPerMin = (vo2 * weightKg / 1000) * 5;
+  return Math.max(0, kcalPerMin * minutes);
+}
+
+function addCardio(){
+  const dur = num(document.getElementById('c-dur').value, null);
+  const spd = num(document.getElementById('c-spd').value, null);
+  const inc = num(document.getElementById('c-inc').value, 0);
+  const wgt = num(document.getElementById('c-wgt').value, state.settings.bodyWeightKg || 75);
+  if (!dur || dur <= 0) { alert('Süre gerekli (dakika).'); return; }
+  if (!spd || spd <= 0) { alert('Hız gerekli (km/saat).'); return; }
+  const kcal = Math.round(walkKcal(wgt, spd, inc, dur));
+  state.cardioLog.push({
+    id: uid(), date: todayStr(), time: nowTimeStr(),
+    duration: dur, speed: spd, incline: inc, weight: wgt, kcal
+  });
+  saveState();
+  document.getElementById('c-dur').value = '';
+  document.getElementById('c-spd').value = '';
+  document.getElementById('c-inc').value = '';
+  renderCardio();
+}
+function deleteCardio(id){
+  if (!confirm('Bu kaydı sil?')) return;
+  state.cardioLog = state.cardioLog.filter(c => c.id !== id);
+  saveState();
+  renderCardio();
+}
+
+function renderCardio(){
+  const el = document.getElementById('kc');
+  const log = [...state.cardioLog].reverse();
+  const today = todayStr();
+  const todayKcal = state.cardioLog.filter(c => c.date === today).reduce((s, c) => s + c.kcal, 0);
+  const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  const weekKcal = state.cardioLog.filter(c => {
+    // basit tarih ayrıştırma: todayStr() 'gün.ay.yıl' formatında (tr-TR)
+    const [d, m, y] = c.date.split('.').map(n => parseInt(n, 10));
+    return new Date(y, m - 1, d).getTime() >= weekAgo;
+  }).reduce((s, c) => s + c.kcal, 0);
+
+  let html = `<div class="sum">
+    <div class="sumc"><div class="sumn">${Math.round(todayKcal)}</div><div class="suml">Bugün kcal</div></div>
+    <div class="sumc"><div class="sumn">${Math.round(weekKcal)}</div><div class="suml">Bu hafta kcal</div></div>
+  </div>`;
+
+  html += `<div class="sect">Yürüyüş Ekle</div>
+  <div class="mw">
+    <div class="row2">
+      <div class="fld"><label>Süre (dk)</label><input id="c-dur" class="inp" type="number" inputmode="numeric" placeholder="30"></div>
+      <div class="fld"><label>Hız (km/saat)</label><input id="c-spd" class="inp" type="number" inputmode="decimal" step="0.1" placeholder="5.5"></div>
+    </div>
+    <div class="row2">
+      <div class="fld"><label>Eğim (%)</label><input id="c-inc" class="inp" type="number" inputmode="decimal" step="0.5" placeholder="0"></div>
+      <div class="fld"><label>Kilo (kg)</label><input id="c-wgt" class="inp" type="number" inputmode="decimal" value="${state.settings.bodyWeightKg || ''}"></div>
+    </div>
+    <button class="btn pri" style="width:100%;margin-top:6px" onclick="addCardio()">+ Kaydet</button>
+  </div>`;
+
+  html += '<div class="sect">Geçmiş</div>';
+  html += log.length ? log.map(c => `<div class="wi">
+      <div class="wih">
+        <span class="wid">${esc(c.date)} ${esc(c.time || '')}</span>
+        <span class="wit">${c.kcal} kcal</span>
+      </div>
+      <div class="wie">${c.duration}dk · ${c.speed}km/s · ${c.incline}% eğim · ${c.weight}kg
+        <span class="mini" style="float:right;cursor:pointer" onclick="deleteCardio('${c.id}')">Sil</span>
+      </div>
+    </div>`).join('') : '<div class="empty">Henüz kardiyo kaydı yok.</div>';
+
+  el.innerHTML = html;
+}
+
+/* =========================================================
+   RENDER — YÖNET SAYFASI
+   ========================================================= */
+function renderManage(){
+  const el = document.getElementById('mc');
+  let html = `<div class="sect">Ayarlar</div>
+  <div class="mw">
+    <div class="row2">
+      <div class="fld"><label>Vücut ağırlığı (kg)</label><input class="inp" type="number" inputmode="decimal" value="${state.settings.bodyWeightKg}" onchange="state.settings.bodyWeightKg=num(this.value,75);saveState();renderWorkoutPage()"></div>
+      <div class="fld"><label>Dinlenme (sn)</label><input class="inp" type="number" inputmode="numeric" value="${state.settings.restSeconds}" onchange="setR(this.value);document.getElementById('rslider').value=this.value"></div>
+    </div>
+    <div style="font-size:10px;color:var(--muted)">Vücut ağırlığı otomatik kalori tahmininde kullanılır.</div>
+  </div>
+
+  <div class="sect">Veri Yedekleme</div>
+  <div class="mw">
+    <div class="mbtns" style="margin-top:0">
+      <button class="btn pri" onclick="exportData()">⬇ Veriyi Dışa Aktar</button>
+      <button class="btn ghost" onclick="document.getElementById('io-file').click()">📂 Dosyadan Yükle</button>
+    </div>
+    <input type="file" id="io-file" accept=".json,application/json" style="display:none" onchange="importFromFile(this)">
+    <div class="fld" style="margin-top:10px"><label>JSON yedek (dışa aktarınca dolar / içe aktarmak için yapıştır)</label>
+      <textarea class="noteinp" id="io-area" rows="4" style="min-height:80px"></textarea>
+    </div>
+    <button class="btn ghost" style="width:100%" onclick="importFromArea()">⬆ Metinden İçe Aktar</button>
+    <div style="font-size:10px;color:var(--muted);margin-top:6px">Telefonda site verileri silinirse tüm geçmiş gider — arada bir yedek almayı unutma.</div>
+  </div>
+
+  <div class="sect">Yeni Antrenman</div>
+  <div class="mrow">
+    <input class="inp" id="new-w-name" placeholder="Örn: Seans C, Kardiyo Günü...">
+    <button class="btn pri" onclick="addWorkout()">+ Ekle</button>
+  </div>
+
+  <div class="sect">Antrenmanlarım</div>`;
+
+  html += state.workouts.map(w => {
+    const isActive = w.id === state.settings.activeWorkoutId;
+    const exRows = wExercises(w).map(ex => `<div class="mex">
+      <div class="mexn">${esc(ex.name)}<div class="mexm">${(ex.muscles || []).map(esc).join(', ')} · ${ex.sets}×${ex.reps}${ex.calPerSet ? ' · ' + ex.calPerSet + 'kcal/set' : ''}</div></div>
+      <div class="mwb">
+        <button class="icb" onclick="moveExercise('${w.id}','${ex.id}',-1)">↑</button>
+        <button class="icb" onclick="moveExercise('${w.id}','${ex.id}',1)">↓</button>
+        <button class="icb" onclick="openExModal('${w.id}','${ex.id}')">✎</button>
+        <button class="icb" onclick="deleteExercise('${w.id}','${ex.id}')">🗑</button>
+      </div>
+    </div>`).join('');
+
+    return `<div class="mw${isActive ? ' active' : ''}">
+      <div class="mwh">
+        <div class="mwn">${esc(w.name)}${isActive ? ' <span class="tag tk">AKTİF</span>' : ''}</div>
+        <div class="mwb">
+          ${!isActive ? `<button class="icb" title="Aktif yap" onclick="setActiveWorkout('${w.id}')">▶</button>` : ''}
+          <button class="icb" onclick="renameWorkout('${w.id}')">✎</button>
+          <button class="icb" onclick="deleteWorkout('${w.id}')">🗑</button>
+        </div>
+      </div>
+      ${exRows || '<div class="hempty">Henüz hareket yok</div>'}
+      <button class="addex" onclick="openExModal('${w.id}',null)">+ Hareket Ekle</button>
+    </div>`;
+  }).join('');
+
+  el.innerHTML = html;
+}
+
+/* =========================================================
+   RENDER — GENEL / SEKME YÖNETİMİ
+   ========================================================= */
+let curTab = 'w';
+
+function renderHeader(){
+  document.getElementById('dt').textContent = new Date().toLocaleDateString('tr-TR', { weekday:'long', day:'numeric', month:'long' });
+  const sel = document.getElementById('wsel');
+  sel.innerHTML = state.workouts.map(w => `<option value="${w.id}"${w.id === state.settings.activeWorkoutId ? ' selected' : ''}>${esc(w.name)}</option>`).join('');
+  document.getElementById('ns').textContent = state.workouts.length > 1 ? nextW().name : '—';
+}
+
+function showTab(t){
+  curTab = t;
+  document.querySelectorAll('.tab').forEach((b, i) => b.classList.toggle('on', ['w','h','s','k','m'][i] === t));
+  ['w','h','s','k','m'].forEach(k => document.getElementById('page-' + k).classList.toggle('on', k === t));
+  if (t === 'h') renderHistory();
+  if (t === 's') renderStats();
+  if (t === 'k') renderCardio();
+  if (t === 'm') renderManage();
+}
+
+function renderAll(){
+  renderHeader();
+  renderWorkoutPage();
+  if (curTab === 'h') renderHistory();
+  if (curTab === 's') renderStats();
+  if (curTab === 'k') renderCardio();
+  if (curTab === 'm') renderManage();
+}
+
+/* =========================================================
+   BAŞLANGIÇ
+   ========================================================= */
+function init(){
+  loadState();
+  loadSession();
+  loadTimer();
+  rt = state.settings.restSeconds || 90;
+  document.getElementById('rslider').value = rt;
+  document.getElementById('rl').textContent = rt;
+  tickW();
+  if (timer.wRunning) wi = setInterval(tickW, 1000);
+  if (timer.rRunning) { ri = setInterval(tickR, 1000); tickR(); } else { updRD(rt); }
+  document.getElementById('wsel').onchange = e => setActiveWorkout(e.target.value);
+  document.getElementById('ovl').addEventListener('click', e => { if (e.target.id === 'ovl') closeModal(); });
+  renderAll();
+}
+init();
+
+// Service worker'ı kaydet — sadece bir kez, ilk açılışta olur.
+// "Ana Ekrana Ekle" ile kurduğun ikonun artık gerçek bir uygulama gibi
+// (tarayıcı adres çubuğu olmadan, offline) açılabilmesini sağlar.
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
