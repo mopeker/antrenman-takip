@@ -1,10 +1,9 @@
-// Bu dosya, uygulamanın dosyalarını telefonda önbelleğe alır.
-// Böylece internet olmasa bile (uçakta, metroda, çekmeyen yerde) uygulama açılır.
-// Kayıtlı antrenman VERİLERİ zaten localStorage'da tutuluyor, bu dosyanın işi
-// sadece HTML/CSS/JS "kabuğunu" önbelleğe almak.
+// Antrenman Takip v5 service worker
+// Uygulama kabuğunu offline açar; ikonlar eksikse kurulum çökmez.
 
-const CACHE_NAME = 'antrenman-cache-v3';
+const CACHE_NAME = 'antrenman-cache-v7';
 const FILES_TO_CACHE = [
+  './',
   './index.html',
   './manifest.json',
   './icon-192.png',
@@ -13,7 +12,13 @@ const FILES_TO_CACHE = [
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(FILES_TO_CACHE))
+    caches.open(CACHE_NAME).then((cache) =>
+      Promise.all(
+        FILES_TO_CACHE.map((url) =>
+          cache.add(url).catch(() => null)
+        )
+      )
+    )
   );
   self.skipWaiting();
 });
@@ -27,17 +32,15 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Strateji: önce ağdan dene (güncel sürüm), olmazsa önbellekten ver.
-// Böylece internet varken hep en güncel halini alırsın, yokken de eski hali açılır.
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   event.respondWith(
     fetch(event.request)
       .then((res) => {
-        const resClone = res.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, resClone));
+        const clone = res.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
         return res;
       })
-      .catch(() => caches.match(event.request))
+      .catch(() => caches.match(event.request).then((cached) => cached || caches.match('./index.html')))
   );
 });

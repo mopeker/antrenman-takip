@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-<title>Antrenman Takip v2.2</title>
+<title>Antrenman Takip v5</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 :root {
@@ -24,18 +24,26 @@
   --font-ui:'Manrope',-apple-system,BlinkMacSystemFont,sans-serif;
   --font-num:'JetBrains Mono',ui-monospace,monospace;
 }
-body { background:var(--bg); color:var(--text); font-family:var(--font-ui); padding:12px; padding-bottom:90px; }
+body { background:var(--bg); color:var(--text); font-family:var(--font-ui); padding:12px; padding-bottom:calc(90px + env(safe-area-inset-bottom)); }
 .wrap { max-width:500px; margin:0 auto; }
 
 /* ---------- HEADER ---------- */
 .hdr { display:flex; justify-content:space-between; align-items:center; gap:10px; padding-bottom:12px; border-bottom:1px solid var(--border); margin-bottom:14px; }
 .hdr-t { font-size:19px; font-weight:800; letter-spacing:-0.01em; }
 .hdr-s { font-size:11px; color:var(--muted); margin-top:2px; }
-.wsel { background:rgba(232,255,71,.08); border:1px solid var(--accent); color:var(--accent); padding:8px 10px; border-radius:20px; font-size:12px; font-weight:700; max-width:160px; }
-.wsel:focus { outline:none; }
+
+/* ---------- ANTRENMAN SEÇİM ŞERİDİ (ana ekran) ----------
+   Tüm seanslar burada yan yana durur; dokun → o seans aktif olur.
+   Yatay kaydırılabilir, başparmakla rahat basılacak boyda. */
+.wchips { display:flex; gap:6px; margin-bottom:12px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+.wchips::-webkit-scrollbar { display:none; }
+.wchip { flex:0 0 auto; padding:11px 16px; border:1px solid var(--border); border-radius:999px; background:var(--surface); color:var(--muted); font-size:12px; font-weight:800; cursor:pointer; white-space:nowrap; font-family:var(--font-ui); }
+.wchip.on { background:var(--accent); border-color:var(--accent); color:#000; box-shadow:0 0 16px rgba(232,255,71,.25); }
+.wchip.add { border-style:dashed; color:var(--accent); background:none; }
 
 /* ---------- TABS ---------- */
-.tabs { display:flex; gap:6px; margin-bottom:14px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+.tabs { display:flex; gap:6px; margin-bottom:8px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;
+  position:sticky; top:0; z-index:10; background:var(--bg); padding:8px 0; }
 .tabs::-webkit-scrollbar { display:none; }
 .tab { flex:0 0 auto; padding:10px 14px; border:1px solid var(--border); border-radius:8px; background:var(--surface); color:var(--muted); font-size:11px; font-weight:600; cursor:pointer; text-align:center; white-space:nowrap; }
 .tab.on { background:rgba(232,255,71,.1); border-color:var(--accent); color:var(--accent); }
@@ -56,6 +64,58 @@ body { background:var(--bg); color:var(--text); font-family:var(--font-ui); padd
 .cal-lbl { font-size:11px; color:var(--muted); text-transform:uppercase; }
 .cal-num { font-size:24px; font-weight:700; color:var(--green); font-family:var(--font-num); font-variant-numeric:tabular-nums; letter-spacing:-0.02em; text-shadow:0 0 12px rgba(74,222,128,.35); }
 .prog { background:rgba(74,158,255,.08); border:1px solid rgba(74,158,255,.2); border-radius:10px; padding:10px 12px; margin-bottom:14px; font-size:11px; color:var(--blue); line-height:1.6; }
+
+
+/* ---------- V3 AKILLI PANEL ---------- */
+.focus { background:linear-gradient(135deg,rgba(232,255,71,.12),rgba(74,158,255,.08)); border:1px solid rgba(232,255,71,.24); border-radius:16px; padding:14px; margin-bottom:14px; box-shadow:0 12px 32px rgba(0,0,0,.22); }
+.fx-top { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:10px; }
+.fx-kicker { font-size:10px; color:var(--muted); text-transform:uppercase; font-weight:800; letter-spacing:.04em; }
+.fx-title { font-size:20px; font-weight:800; letter-spacing:-.03em; line-height:1.15; margin-top:2px; }
+.fx-sub { font-size:11px; color:var(--muted); margin-top:4px; line-height:1.4; }
+.fx-badge { flex-shrink:0; border:1px solid rgba(232,255,71,.32); background:rgba(232,255,71,.1); color:var(--accent); border-radius:999px; padding:6px 9px; font-size:10px; font-weight:800; white-space:nowrap; }
+.coach { background:rgba(0,0,0,.2); border:1px solid rgba(255,255,255,.05); border-radius:10px; padding:9px 10px; color:var(--text); font-size:12px; line-height:1.45; margin:8px 0 10px; }
+.fx-actions { display:grid; grid-template-columns:1.4fr .8fr; gap:8px; }
+.bigact { border:none; border-radius:10px; background:var(--accent); color:#000; padding:13px 10px; font-size:13px; font-weight:900; cursor:pointer; }
+.sideact { border:1px solid var(--border); border-radius:10px; background:rgba(255,255,255,.04); color:var(--text); padding:13px 10px; font-size:12px; font-weight:800; cursor:pointer; }
+.weekline { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-top:10px; }
+.wmini { background:rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.055); border-radius:10px; padding:8px 6px; text-align:center; }
+.wmini-n { font-size:16px; font-weight:800; color:var(--accent); font-family:var(--font-num); font-variant-numeric:tabular-nums; }
+.wmini-l { font-size:9px; color:var(--muted); text-transform:uppercase; margin-top:1px; }
+.ready { border-color:rgba(74,222,128,.28); background:linear-gradient(135deg,rgba(74,222,128,.12),rgba(232,255,71,.06)); }
+.card.focus-card { border-color:rgba(232,255,71,.55); box-shadow:0 0 0 1px rgba(232,255,71,.1), 0 10px 26px rgba(232,255,71,.06); }
+.adv-up { background:rgba(74,222,128,.11); color:var(--green); border:1px solid rgba(74,222,128,.25); }
+.adv-stuck { background:rgba(255,107,53,.11); color:var(--accent2); border:1px solid rgba(255,107,53,.25); }
+.adv-same { background:rgba(74,158,255,.10); color:var(--blue); border:1px solid rgba(74,158,255,.24); }
+.adv-new { background:rgba(232,255,71,.1); color:var(--accent); border:1px solid rgba(232,255,71,.2); }
+@media (max-width:380px){ .fx-actions{grid-template-columns:1fr;} .weekline{grid-template-columns:repeat(2,1fr);} .fx-title{font-size:18px;} }
+
+/* ---------- V4 KOÇ / ANALİZ / ŞABLONLAR ---------- */
+.coach-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px; }
+.coach-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px; }
+.coach-card.hot { border-color:rgba(232,255,71,.28); background:rgba(232,255,71,.055); }
+.coach-card.warn { border-color:rgba(255,107,53,.28); background:rgba(255,107,53,.055); }
+.coach-k { font-size:10px; color:var(--muted); text-transform:uppercase; font-weight:800; letter-spacing:.04em; }
+.coach-v { font-size:19px; font-weight:900; margin-top:3px; letter-spacing:-.02em; }
+.coach-p { font-size:11px; color:var(--muted); line-height:1.45; margin-top:5px; }
+.barrow { margin:8px 0; }
+.barh { display:flex; justify-content:space-between; font-size:11px; margin-bottom:4px; }
+.barlabel { color:var(--text); font-weight:700; }
+.barval { color:var(--accent); font-family:var(--font-num); }
+.bar { height:8px; border-radius:999px; background:rgba(255,255,255,.06); overflow:hidden; border:1px solid rgba(255,255,255,.04); }
+.bar-in { height:100%; border-radius:999px; background:var(--accent); min-width:2px; }
+.todo { background:rgba(74,158,255,.08); border:1px solid rgba(74,158,255,.2); color:var(--blue); border-radius:12px; padding:10px 12px; font-size:12px; line-height:1.55; margin:8px 0 12px; }
+.pending { background:rgba(74,222,128,.1); border:1px solid rgba(74,222,128,.25); border-radius:12px; padding:10px 12px; margin-bottom:12px; }
+.pending-title { font-size:12px; font-weight:900; color:var(--green); margin-bottom:4px; }
+.pending-list { font-size:11px; color:var(--muted); line-height:1.55; margin-bottom:8px; }
+.quickgrid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.qcard { border:1px solid var(--border); background:rgba(255,255,255,.035); color:var(--text); border-radius:12px; padding:12px; text-align:left; cursor:pointer; }
+.qtitle { font-size:13px; font-weight:900; color:var(--accent); }
+.qsub { font-size:10px; color:var(--muted); line-height:1.4; margin-top:4px; }
+.pillrow { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+.pill { font-size:10px; border:1px solid var(--border); border-radius:999px; padding:5px 8px; color:var(--muted); background:rgba(255,255,255,.035); }
+.pill.good { color:var(--green); border-color:rgba(74,222,128,.28); }
+.pill.bad { color:var(--accent2); border-color:rgba(255,107,53,.28); }
+@media (max-width:380px){ .coach-grid,.quickgrid{grid-template-columns:1fr;} }
 
 /* ---------- EGZERSİZ KARTI ---------- */
 .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; margin-bottom:10px; overflow:hidden; }
@@ -161,8 +221,31 @@ body { background:var(--bg); color:var(--text); font-family:var(--font-ui); padd
 .mbtns { display:flex; gap:8px; margin-top:14px; }
 .mbtns .btn { flex:1; padding:13px; }
 
+/* ---------- V5 EKLERİ: TOAST / CHIP / PROGRESS / STEPPER / SPARK ---------- */
+.toast-wrap { position:fixed; left:50%; transform:translateX(-50%); bottom:calc(84px + env(safe-area-inset-bottom)); z-index:400; display:flex; flex-direction:column; gap:6px; width:min(92vw,460px); pointer-events:none; }
+.toast { background:#1c220e; border:1px solid rgba(232,255,71,.45); color:var(--text); border-radius:10px; padding:11px 14px; font-size:12px; font-weight:700; box-shadow:0 10px 28px rgba(0,0,0,.55); opacity:0; transform:translateY(10px); transition:opacity .25s, transform .25s; }
+.toast.show { opacity:1; transform:none; }
+.toast.err { border-color:rgba(248,113,113,.5); background:#2a1414; }
+.chips { display:flex; gap:4px; justify-content:center; margin-bottom:6px; flex-wrap:wrap; }
+.chip { font-size:10px; font-weight:700; border:1px solid var(--border); border-radius:999px; padding:4px 9px; color:var(--muted); cursor:pointer; background:rgba(255,255,255,.03); }
+.chip.on { color:var(--accent); border-color:rgba(232,255,71,.4); background:rgba(232,255,71,.08); }
+.rprog { height:4px; border-radius:999px; background:rgba(255,255,255,.07); overflow:hidden; margin:2px 0 8px; }
+.rprog-in { height:100%; width:100%; background:var(--accent); transition:width .3s linear, background .3s; }
+.wgrp { display:flex; gap:4px; }
+.wgrp .inp { min-width:0; }
+.stp { width:34px; flex-shrink:0; border:1px solid var(--border); border-radius:6px; background:var(--surface2); color:var(--accent); font-size:16px; font-weight:800; cursor:pointer; }
+.sin { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.spark { flex-shrink:0; opacity:.9; }
+.fchips { display:flex; gap:6px; margin-bottom:10px; overflow-x:auto; scrollbar-width:none; }
+.fchips::-webkit-scrollbar { display:none; }
+.fchips .chip { white-space:nowrap; }
+.sumrow { display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px solid var(--border); font-size:13px; }
+.sumrow:last-child { border-bottom:none; }
+.sumrow b { color:var(--accent); font-family:var(--font-num); }
+.wl-note { font-size:10px; color:var(--muted); margin-top:6px; }
+
 /* ---------- ALT BAR ---------- */
-.bot { position:fixed; bottom:0; left:0; right:0; background:var(--surface); border-top:1px solid var(--border); padding:10px 16px; display:flex; justify-content:space-between; align-items:center; z-index:100; }
+.bot { position:fixed; bottom:0; left:0; right:0; background:var(--surface); border-top:1px solid var(--border); padding:10px 16px calc(10px + env(safe-area-inset-bottom)); display:flex; justify-content:space-between; align-items:center; z-index:100; }
 .bl { font-size:10px; color:var(--muted); }
 .bv { font-size:13px; font-weight:700; color:var(--accent); }
 .swb { padding:10px 14px; background:var(--accent); color:#000; border:none; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer; }
@@ -172,17 +255,18 @@ body { background:var(--bg); color:var(--text); font-family:var(--font-ui); padd
 <div class="wrap">
   <div class="hdr">
     <div><div class="hdr-t">💪 Antrenman</div><div class="hdr-s" id="dt"></div></div>
-    <select class="wsel" id="wsel"></select>
   </div>
   <div class="tabs">
-    <div class="tab on" onclick="showTab('w')">Antrenman</div>
-    <div class="tab" onclick="showTab('h')">Geçmiş</div>
-    <div class="tab" onclick="showTab('s')">İstatistik</div>
-    <div class="tab" onclick="showTab('k')">Kardiyo</div>
-    <div class="tab" onclick="showTab('m')">Yönet</div>
+    <div class="tab on" data-tab="w" onclick="showTab('w')">Antrenman</div>
+    <div class="tab" data-tab="h" onclick="showTab('h')">Geçmiş</div>
+    <div class="tab" data-tab="s" onclick="showTab('s')">İstatistik</div>
+    <div class="tab" data-tab="k" onclick="showTab('k')">Kardiyo</div>
+    <div class="tab" data-tab="m" onclick="showTab('m')">Yönet</div>
   </div>
 
   <div id="page-w" class="page on">
+    <div class="wchips" id="wchips"></div>
+    <div id="todayPanel"></div>
     <div class="timers">
       <div class="tc">
         <div class="tl">Antrenman</div>
@@ -192,15 +276,22 @@ body { background:var(--bg); color:var(--text); font-family:var(--font-ui); padd
       <div class="tc">
         <div class="tl">Dinlenme (<span id="rl">90</span>sn)</div>
         <div class="td" id="rtime">1:30</div>
+        <div class="rprog"><div class="rprog-in" id="rprog"></div></div>
+        <div class="chips">
+          <span class="chip" onclick="setRQuick(60)">60</span>
+          <span class="chip" onclick="setRQuick(90)">90</span>
+          <span class="chip" onclick="setRQuick(120)">120</span>
+          <span class="chip" onclick="setRQuick(180)">180</span>
+        </div>
         <input type="range" min="30" max="180" step="5" value="90" class="slider" id="rslider" oninput="setR(this.value)">
         <div class="tbs"><div class="tb" onclick="startR()">Başla</div><div class="tb" onclick="rstR()">↺</div></div>
       </div>
     </div>
     <div class="cal-bar">
-      <div><div class="cal-lbl">Toplam Yakılan</div><div style="font-size:10px;color:var(--muted)">Tamamlanan setler</div></div>
+      <div><div class="cal-lbl">Tahmini Yakılan</div><div style="font-size:10px;color:var(--muted)">Tamamlanan setlere göre</div></div>
       <div><div class="cal-num" id="totcal">0</div><div style="font-size:10px;color:var(--muted);text-align:right">kcal</div></div>
     </div>
-    <div class="prog"><strong>Double Progression:</strong> Tüm setlerde hedef tekrarı tamamlarsan → sonraki seansta 2.5 kg artır.</div>
+    <div class="prog"><strong>Akıllı Progression:</strong> Uygulama son kayda bakar; tüm setler hedefteyse sonraki seans için +2.5 kg önerir, takılınca aynı kiloda kalmanı söyler.</div>
     <div id="exlist"></div>
     <button class="fin" onclick="finishWorkout()">✓ Antrenmanı Tamamla ve Kaydet</button>
   </div>
@@ -239,6 +330,30 @@ body { background:var(--bg); color:var(--text); font-family:var(--font-ui); padd
   </div>
 </div>
 
+<!-- SEANS RENAME / DELETE MODALI -->
+<div class="ovl" id="ovl-w">
+  <div class="modal">
+    <div class="mt" id="ovl-w-title"></div>
+    <div id="ovl-w-body"></div>
+    <div class="mbtns">
+      <button class="btn ghost" onclick="closeWModal()">Vazgeç</button>
+      <button class="btn pri" id="ovl-w-ok" onclick="confirmWModal()">Tamam</button>
+    </div>
+  </div>
+</div>
+
+<!-- ANTRENMAN ÖZET MODALI (kaydettikten sonra çıkar) -->
+<div class="ovl" id="ovl2">
+  <div class="modal">
+    <div class="mt" id="sum-title">✓ Antrenman Kaydedildi</div>
+    <div id="sum-body"></div>
+    <div class="mbtns"><button class="btn pri" onclick="closeSummary()">Devam</button></div>
+  </div>
+</div>
+
+<!-- TOAST BİLDİRİMLERİ -->
+<div class="toast-wrap" id="toasts"></div>
+
 <script>
 "use strict";
 /* =========================================================
@@ -259,6 +374,31 @@ function num(v, fallback){ const n = parseFloat(v); return isNaN(n) ? fallback :
 function inum(v, fallback){ const n = parseInt(v, 10); return isNaN(n) ? fallback : n; }
 function todayStr(){ return new Date().toLocaleDateString('tr-TR'); }
 function nowTimeStr(){ return new Date().toLocaleTimeString('tr-TR', { hour:'2-digit', minute:'2-digit' }); }
+
+// Ekranı kilitlemeyen kısa bildirim. alert() her şeyi durdurur; toast durdurmaz.
+// Onay isteyen (silme gibi) yerlerde hâlâ confirm() kullanılır — o bilerek bloklar.
+function toast(msg, type){
+  const wrap = document.getElementById('toasts');
+  if (!wrap) { alert(msg); return; }
+  const t = document.createElement('div');
+  t.className = 'toast' + (type === 'err' ? ' err' : '');
+  t.textContent = msg;
+  wrap.appendChild(t);
+  requestAnimationFrame(() => t.classList.add('show'));
+  setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }, 2800);
+}
+
+// Titreşim: Android'de çalışır, iOS sessizce yok sayar — o yüzden try/catch şart değil ama garanti.
+function buzz(pattern){ try { navigator.vibrate && navigator.vibrate(pattern); } catch(e) {} }
+
+// Video linki garantisi: hareketin kendi linki varsa onu kullanır,
+// yoksa hareket adından otomatik YouTube arama linki üretir.
+// Böylece şablondan gelen veya elle eklenen hiçbir hareket linksiz kalmaz,
+// ve arama linki (tek videonun aksine) hiçbir zaman "video silindi"ye düşmez.
+function videoUrl(ex){
+  if (ex.video && String(ex.video).trim()) return String(ex.video).trim();
+  return 'https://www.youtube.com/results?search_query=' + encodeURIComponent((ex.name || 'exercise') + ' proper form');
+}
 
 /* =========================================================
    VARSAYILAN VERİ (mevcut A/B programı)
@@ -316,13 +456,23 @@ function isValidState(s){
             Array.isArray(s.logs) && s.settings && s.settings.activeWorkoutId);
 }
 
+function normalizeState(){
+  if (!state.settings) state.settings = {};
+  if (!Array.isArray(state.cardioLog)) state.cardioLog = [];
+  if (!Array.isArray(state.logs)) state.logs = [];
+  if (!Array.isArray(state.settings.pendingProgressions)) state.settings.pendingProgressions = [];
+  if (!state.settings.bodyWeightKg) state.settings.bodyWeightKg = 125;
+  if (!state.settings.restSeconds) state.settings.restSeconds = 90;
+  if (!state.version || state.version < 4) state.version = 4;
+}
+
 function loadState(){
   const raw = localStorage.getItem(LS_STATE);
   if (raw) {
     const parsed = safeParse(raw);
     if (isValidState(parsed)) {
       state = parsed;
-      if (!Array.isArray(state.cardioLog)) state.cardioLog = [];   // eski veride bu alan yoktu, ekle
+      normalizeState();
       return;
     }
     // Veri bozuk: SİLMEDEN yedek anahtara taşı, kullanıcıya bildir, temiz veriyle devam et
@@ -332,6 +482,7 @@ function loadState(){
   }
   state = seedDefaults();
   migrateOldData();       // eski sürümden veri varsa taşı
+  normalizeState();
   saveState();
 }
 
@@ -414,7 +565,7 @@ function sessionTotalCal(){
   wExercises(activeW()).forEach(ex => {
     const en = session.data[ex.id];
     if (!en || !en.setsDone) return;
-    const w = num(en.weight, lastWeight(ex.id) ?? ex.weight);
+    const w = num(en.weight, plannedWeight(ex));
     const r = num(en.reps, ex.reps);
     const c = calPerSet(ex, w, r);
     en.setsDone.forEach(d => { if (d) t += c; });
@@ -438,39 +589,269 @@ function lastWeight(exId){
   return h.length ? num(h[0].weight, null) : null;
 }
 
+function roundHalf(v){ return Math.round(v * 2) / 2; }
+function dateToTs(dateStr){
+  if (!dateStr) return 0;
+  const parts = String(dateStr).split('.').map(n => parseInt(n, 10));
+  if (parts.length >= 3 && parts.every(n => !isNaN(n))) return new Date(parts[2], parts[1]-1, parts[0]).getTime();
+  return 0;
+}
+function recentLogs(days){
+  const since = Date.now() - days * 24 * 60 * 60 * 1000;
+  return state.logs.filter(l => (l.ts || dateToTs(l.date)) >= since);
+}
+function recentCardio(days){
+  const since = Date.now() - days * 24 * 60 * 60 * 1000;
+  return (state.cardioLog || []).filter(c => dateToTs(c.date) >= since);
+}
+function weeklySummary(){
+  const logs = recentLogs(7);
+  const cardio = recentCardio(7);
+  let sets = 0;
+  logs.forEach(l => Object.values(l.entries || {}).forEach(d => { sets += d.setsDone ? d.setsDone.filter(Boolean).length : 0; }));
+  return {
+    workouts: logs.length,
+    sets,
+    mins: logs.reduce((s,l)=>s+(l.duration || 0),0),
+    cardioMin: cardio.reduce((s,c)=>s+(num(c.duration,0) || 0),0),
+    kcal: logs.reduce((s,l)=>s+(l.totalCalories || 0),0) + cardio.reduce((s,c)=>s+(c.kcal || 0),0)
+  };
+}
+function lastExerciseLogs(exId, limit){
+  return state.logs.slice().reverse().filter(l => l.entries && l.entries[exId]).slice(0, limit || 1);
+}
+function targetHit(ex, d){
+  if (!d) return false;
+  const done = d.setsDone ? d.setsDone.filter(Boolean).length : 0;
+  return done >= (ex.sets || 1) && num(d.reps, 0) >= (ex.reps || 0);
+}
+function progressionAdvice(ex){
+  const bw = num(ex.weight, 0) === 0;
+  if (bw) return { type:'same', short:'Süre / form', text:'Bu hareket vücut ağırlığı. Bugün hedef: süreyi/formu temiz tut, acele edip belini bozma.', suggestedWeight:null };
+  const logs = lastExerciseLogs(ex.id, 3);
+  if (!logs.length) return { type:'new', short:'İlk kayıt', text:'İlk kayıt için hedef basit: form temiz, tempo kontrollü, ego dışarıda.', suggestedWeight:null };
+  const last = logs[0].entries[ex.id];
+  const lw = num(last.weight, ex.weight);
+  if (targetHit(ex, last)) {
+    const sw = roundHalf(lw + 2.5);
+    return { type:'up', short:'+2.5 kg dene', text:`Son kayıtta hedef tamam. Bugün ${sw} kg deneyebilirsin; form bozulursa aynı kiloya dön.`, suggestedWeight:sw };
+  }
+  const stuck = logs.length >= 3 && logs.every(l => {
+    const d = l.entries[ex.id];
+    return num(d.weight, NaN) === lw && !targetHit(ex, d);
+  });
+  if (stuck) return { type:'stuck', short:'Takıldı', text:'3 seanstır aynı kiloda hedef tamamlanmamış. Bugün ağırlık artırma; hatta form bozuluyorsa 2.5 kg düşür.', suggestedWeight:lw };
+  return { type:'same', short:'Aynı kilo', text:'Son kayıt hedefin altında kalmış. Bugün aynı kiloda daha temiz set kovala.', suggestedWeight:lw };
+}
+function completedSets(exId){
+  const en = session.data[exId];
+  return en && en.setsDone ? en.setsDone.filter(Boolean).length : 0;
+}
+function focusExercise(){
+  const exs = wExercises(activeW());
+  return exs.find(ex => completedSets(ex.id) < (ex.sets || 1)) || null;
+}
+function completeNextSet(exId){
+  const ex = state.exercises[exId]; if (!ex) return;
+  const en = entry(exId);
+  let i = 0;
+  while (i < (ex.sets || 1) && en.setsDone[i]) i++;
+  if (i >= (ex.sets || 1)) return;
+  togSet(exId, i);
+}
+function jumpToExercise(exId){
+  const el = document.getElementById('card-' + exId);
+  if (el) el.scrollIntoView({ behavior:'smooth', block:'center' });
+}
+
+function plannedWeight(ex){
+  const adv = progressionAdvice(ex);
+  return adv.suggestedWeight ?? lastWeight(ex.id) ?? ex.weight;
+}
+function applyTodaySuggestions(){
+  wExercises(activeW()).forEach(ex => {
+    if (num(ex.weight,0) === 0) return;
+    const adv = progressionAdvice(ex);
+    const en = entry(ex.id);
+    en.weight = adv.suggestedWeight ?? lastWeight(ex.id) ?? ex.weight;
+    en.reps = ex.reps;
+  });
+  saveSession();
+  renderWorkoutPage();
+  toast('Önerilen ağırlıklar karta işlendi ✓');
+}
+function logVolumeEntry(d){
+  const sets = d.setsDone ? d.setsDone.filter(Boolean).length : 0;
+  const w = num(d.weight, 0);
+  const r = num(d.reps, 0);
+  return Math.round(sets * w * r);
+}
+function bestSetFor(exId){
+  let best = null;
+  state.logs.forEach(l => {
+    const d = l.entries && l.entries[exId];
+    if (!d) return;
+    const w = num(d.weight, 0);
+    if (!best || w > best.weight) best = { weight:w, reps:d.reps, date:l.date, workoutName:l.workoutName };
+  });
+  return best;
+}
+function recentPrs(limit=5){
+  const prs = [];
+  Object.keys(state.exercises || {}).forEach(exId => {
+    const h = exHistory(exId);
+    if (h.length < 2) return;
+    const last = h[0];
+    const prevMax = Math.max(...h.slice(1).map(x => num(x.weight, 0)));
+    const lw = num(last.weight, 0);
+    if (lw > prevMax && lw > 0) prs.push({ exId, name:state.exercises[exId]?.name || last.name || exId, weight:lw, date:last.date });
+  });
+  return prs.slice(0, limit);
+}
+function muscleGroupName(m){
+  const x = String(m || '').toLowerCase();
+  if (x.includes('göğ') || x.includes('chest')) return 'Göğüs';
+  if (x.includes('sırt') || x.includes('back') || x.includes('lat') || x.includes('row')) return 'Sırt';
+  if (x.includes('omuz') || x.includes('shoulder')) return 'Omuz';
+  if (x.includes('quad') || x.includes('ham') || x.includes('leg') || x.includes('bacak') || x.includes('kalça')) return 'Bacak';
+  if (x.includes('core') || x.includes('karın') || x.includes('plank')) return 'Core';
+  if (x.includes('biceps') || x.includes('triceps') || x.includes('kol')) return 'Kol';
+  return m || 'Diğer';
+}
+function muscleSets(days=7){
+  const out = { 'Göğüs':0, 'Sırt':0, 'Omuz':0, 'Bacak':0, 'Core':0, 'Kol':0 };
+  recentLogs(days).forEach(l => Object.keys(l.entries || {}).forEach(exId => {
+    const d = l.entries[exId];
+    const sets = d.setsDone ? d.setsDone.filter(Boolean).length : 0;
+    const ex = state.exercises[exId];
+    const groups = (ex?.muscles?.length ? ex.muscles : [d.name || 'Diğer']).map(muscleGroupName);
+    [...new Set(groups)].forEach(g => { out[g] = (out[g] || 0) + sets; });
+  }));
+  return out;
+}
+function coachReport(){
+  const week = weeklySummary();
+  const muscles = muscleSets(7);
+  const max = Math.max(1, ...Object.values(muscles));
+  const missing = Object.keys(muscles).filter(k => muscles[k] === 0);
+  const low = Object.keys(muscles).filter(k => muscles[k] > 0 && muscles[k] <= Math.max(2, Math.floor(max * .35)));
+  const prs = recentPrs(3);
+  const score = Math.min(100, Math.round((Math.min(week.workouts,3)/3)*45 + (Math.min(week.sets,45)/45)*35 + (Math.min(week.cardioMin,90)/90)*20));
+  let advice = 'Bu hafta kayıt az; önce veriyi doldur, sonra yorum keskinleşir.';
+  if (week.workouts >= 2 && missing.length) advice = `Bu hafta ${missing.slice(0,2).join(' / ')} hiç çalışmamış görünüyor. Programın kör noktası burası olabilir.`;
+  else if (low.length) advice = `${low[0]} diğerlerine göre geride kalmış. Sonraki programa 2-3 set eklemek mantıklı.`;
+  else if (week.workouts >= 3) advice = 'Dağılım dengeli. Şimdi mesele daha fazla hareket değil, aynı hareketlerde küçük ilerleme.';
+  return { week, muscles, max, missing, low, prs, score, advice };
+}
+function coachReportHTML(){
+  const r = coachReport();
+  const bars = Object.entries(r.muscles).map(([k,v]) => `<div class="barrow"><div class="barh"><span class="barlabel">${esc(k)}</span><span class="barval">${v} set</span></div><div class="bar"><div class="bar-in" style="width:${Math.max(3, Math.round(v / r.max * 100))}%"></div></div></div>`).join('');
+  const prHtml = r.prs.length ? r.prs.map(p => `<span class="pill good">PR: ${esc(p.name)} ${p.weight}kg</span>`).join('') : '<span class="pill">Henüz yeni PR yok</span>';
+  return `<div class="sect">Koç Raporu</div>
+    <div class="coach-grid">
+      <div class="coach-card hot"><div class="coach-k">Haftalık Puan</div><div class="coach-v">${r.score}/100</div><div class="coach-p">Antrenman + set + kardiyo dengesine göre kaba skor.</div></div>
+      <div class="coach-card ${r.missing.length ? 'warn' : ''}"><div class="coach-k">Net Yorum</div><div class="coach-v">${r.missing.length ? 'Eksik var' : 'Fena değil'}</div><div class="coach-p">${esc(r.advice)}</div></div>
+    </div>
+    <div class="coach-card"><div class="coach-k">Kas Grubu Dengesi · Son 7 Gün</div>${bars}<div class="pillrow">${prHtml}</div></div>`;
+}
+function collectProgressionsFromEntries(w, entries){
+  const ups = [];
+  wExercises(w).forEach(ex => {
+    if (num(ex.weight,0) === 0) return;
+    const d = entries[ex.id];
+    if (!d || !targetHit(ex, d)) return;
+    const from = num(d.weight, ex.weight);
+    const to = roundHalf(from + 2.5);
+    ups.push({ exId:ex.id, name:ex.name, from, to, date:todayStr(), workoutId:w.id });
+  });
+  return ups;
+}
+function pendingProgressionHTML(){
+  const activeId = state.settings.activeWorkoutId;
+  const ups = (state.settings.pendingProgressions || []).filter(u => !u.workoutId || u.workoutId === activeId);
+  if (!ups.length) return '';
+  const list = ups.slice(0,6).map(u => `${esc(u.name)}: ${u.from}kg → ${u.to}kg`).join('<br>');
+  return `<div class="pending"><div class="pending-title">${ups.length} hareket ağırlık artırmaya hazır</div><div class="pending-list">${list}${ups.length>6 ? '<br>…' : ''}</div><button class="btn pri" style="width:100%" onclick="applyPendingProgressions()">Önerileri kalıcı uygula</button></div>`;
+}
+function applyPendingProgressions(){
+  const ups = state.settings.pendingProgressions || [];
+  if (!ups.length) return;
+  ups.forEach(u => { if (state.exercises[u.exId]) state.exercises[u.exId].weight = u.to; });
+  state.settings.pendingProgressions = [];
+  saveState();
+  renderAll();
+  toast('Progression uygulandı — başlangıç kiloları güncellendi ✓');
+}
+
+
 /* =========================================================
    WORKOUT EKLEME / DÜZENLEME / SİLME
    ========================================================= */
 function addWorkout(){
   const inp = document.getElementById('new-w-name');
   const name = (inp.value || '').trim();
-  if (!name) { alert('Antrenman adı gir.'); return; }
+  if (!name) { toast('Antrenman adı gir.', 'err'); return; }
   state.workouts.push({ id: uid(), name, exerciseIds: [] });
   inp.value = '';
   saveState(); renderManage(); renderHeader();
 }
-function renameWorkout(wId){
+/* =========================================================
+   SEANS YÖNETİM MODALI (rename + delete)
+   PWA/standalone modda prompt() ve confirm() çalışmaz —
+   iOS Safari ve Chrome standalone sessizce null döndürür.
+   Bu yüzden kendi modal'ımızı kullanıyoruz.
+   ========================================================= */
+let _mwCtx = {};
+function openWModal(type, wId){
   const w = state.workouts.find(x => x.id === wId); if (!w) return;
-  const name = prompt('Yeni ad:', w.name);
-  if (name && name.trim()) { w.name = name.trim(); saveState(); renderManage(); renderHeader(); }
-}
-function deleteWorkout(wId){
-  if (state.workouts.length <= 1) { alert('En az bir antrenman kalmalı.'); return; }
-  const w = state.workouts.find(x => x.id === wId); if (!w) return;
-  if (!confirm(`"${w.name}" silinsin mi? (Geçmiş kayıtlar silinmez)`)) return;
-  w.exerciseIds.forEach(id => delete state.exercises[id]);
-  state.workouts = state.workouts.filter(x => x.id !== wId);
-  if (state.settings.activeWorkoutId === wId) {
-    state.settings.activeWorkoutId = state.workouts[0].id;
-    resetSession(); rstW();
+  _mwCtx = { type, wId };
+  const ovl = document.getElementById('ovl-w');
+  const title = document.getElementById('ovl-w-title');
+  const body = document.getElementById('ovl-w-body');
+  const ok = document.getElementById('ovl-w-ok');
+  if (type === 'rename'){
+    title.textContent = 'Seans Adını Değiştir';
+    body.innerHTML = `<div class="fld"><label>Yeni ad</label><input id="ovl-w-inp" class="inp" value="${esc(w.name)}"></div>`;
+    ok.textContent = 'Kaydet'; ok.className = 'btn pri';
+    setTimeout(()=>document.getElementById('ovl-w-inp')?.focus(),80);
+  } else {
+    title.textContent = 'Seansı Sil';
+    body.innerHTML = `<div style="font-size:13px;line-height:1.6">"<strong>${esc(w.name)}</strong>" silinsin mi?<br><span style="color:var(--muted);font-size:11px">Geçmiş kayıtlar silinmez.</span></div>`;
+    ok.textContent = 'Sil'; ok.className = 'btn dngr';
   }
-  saveState(); renderAll();
+  ovl.classList.add('open');
 }
+function closeWModal(){ document.getElementById('ovl-w').classList.remove('open'); }
+function confirmWModal(){
+  const { type, wId } = _mwCtx;
+  if (type === 'rename'){
+    const val = (document.getElementById('ovl-w-inp')?.value || '').trim();
+    if (!val){ toast('Ad boş olamaz.','err'); return; }
+    const w = state.workouts.find(x => x.id === wId); if (!w) return;
+    w.name = val;
+    saveState(); closeWModal(); renderManage(); renderHeader(); renderWChips();
+    toast('Seans adı güncellendi ✓');
+  } else {
+    if (state.workouts.length <= 1){ toast('En az bir antrenman kalmalı.','err'); return; }
+    const w = state.workouts.find(x => x.id === wId); if (!w) return;
+    w.exerciseIds.forEach(id => delete state.exercises[id]);
+    state.workouts = state.workouts.filter(x => x.id !== wId);
+    if (state.settings.activeWorkoutId === wId){
+      state.settings.activeWorkoutId = state.workouts[0].id;
+      resetSession(); rstW();
+    }
+    saveState(); closeWModal(); renderAll();
+    toast('Seans silindi.');
+  }
+}
+
+function renameWorkout(wId){ openWModal('rename', wId); }
+function deleteWorkout(wId){ openWModal('delete', wId); }
 function setActiveWorkout(wId){
   if (wId === state.settings.activeWorkoutId) return;
   const hasDone = Object.values(session.data).some(e => e.setsDone && e.setsDone.some(Boolean));
   if (hasDone && !confirm('Devam eden seanstaki setler silinecek. Antrenman değiştirilsin mi?')) {
-    renderHeader(); return;
+    renderWChips(); return;
   }
   state.settings.activeWorkoutId = wId;
   resetSession(); rstW();
@@ -501,7 +882,7 @@ function closeModal(){ document.getElementById('ovl').classList.remove('open'); 
 
 function saveExModal(){
   const name = document.getElementById('f-name').value.trim();
-  if (!name) { alert('Hareket adı zorunlu.'); return; }
+  if (!name) { toast('Hareket adı zorunlu.', 'err'); return; }
   const data = {
     name,
     muscles: document.getElementById('f-muscles').value.split(',').map(s => s.trim()).filter(Boolean),
@@ -550,9 +931,36 @@ function togSet(exId, j){
   const en = entry(exId);
   en.setsDone[j] = !en.setsDone[j];
   saveSession();
+  // Tüm listeyi yeniden kurmak yerine sadece bu kartı tazele:
+  // ekran zıplamaz, uzun listede performans düşmez.
   rerenderCard(exId);
+  updateFocusClasses();
+  renderTodayPanel();
   updateTotalCal();
-  if (en.setsDone[j]) startR();
+  if (en.setsDone[j]) { startR(); buzz(35); }
+}
+
+// "Sıradaki hareket" vurgusunu (sarı çerçeve) tüm kartlarda günceller —
+// bir kart bitince vurgu sonraki karta geçsin diye.
+function updateFocusClasses(){
+  const f = focusExercise();
+  wExercises(activeW()).forEach(ex => {
+    const c = document.getElementById('card-' + ex.id);
+    if (c) c.classList.toggle('focus-card', f?.id === ex.id);
+  });
+}
+
+// Ağırlık inputunun yanındaki −/+ butonları: eldiven parmağıyla
+// sayı yazmak yerine 2.5'lik plaka adımlarıyla oynat.
+function stepW(exId, delta){
+  const card = document.getElementById('card-' + exId);
+  const inp = card?.querySelector('.winp');
+  if (!inp) return;
+  const ex = state.exercises[exId];
+  const cur = num(inp.value, num(entry(exId).weight, ex ? plannedWeight(ex) : 0));
+  const v = Math.max(0, roundHalf(cur + delta));
+  inp.value = v;
+  onField(exId, 'weight', v);
 }
 function adjSets(exId, delta){
   const ex = state.exercises[exId]; if (!ex) return;
@@ -568,11 +976,13 @@ function adjSets(exId, delta){
   saveState(); saveSession();
   rerenderCard(exId);
   updateTotalCal();
+  renderTodayPanel();
 }
 function onField(exId, field, val){
   entry(exId)[field] = val;
   saveSession();
   updateCardCals(exId);
+  renderTodayPanel();
 }
 function togHist(exId){ document.getElementById('hist-' + exId)?.classList.toggle('open'); }
 
@@ -583,7 +993,7 @@ function finishWorkout(){
   const w = activeW();
   const exs = wExercises(w);
   const completed = exs.filter(ex => entry(ex.id).setsDone.some(Boolean));
-  if (!completed.length) { alert('Hiç set tamamlamadın!'); return; }
+  if (!completed.length) { toast('Hiç set tamamlamadın — önce en az bir set işaretle.', 'err'); return; }
 
   const totalCal = sessionTotalCal();
   const mins = Math.floor(wElapsed() / 60);
@@ -595,7 +1005,7 @@ function finishWorkout(){
     const setCount = (en.setsDone || []).filter(Boolean).length;
     if (setCount === 0) return;   // hiç set tamamlanmadıysa bu hareket log'a YAZILMAZ
     totalSets += setCount;
-    const wVal = num(en.weight, lastWeight(ex.id) ?? ex.weight);
+    const wVal = num(en.weight, plannedWeight(ex));
     const rVal = num(en.reps, ex.reps);
     entries[ex.id] = {
       name: ex.name,
@@ -612,13 +1022,31 @@ function finishWorkout(){
     duration: mins, totalCalories: totalCal, entries
   });
 
+  const ups = collectProgressionsFromEntries(w, entries);
+  state.settings.pendingProgressions = ups;
+
   // sıradaki antrenmana geç
   state.settings.activeWorkoutId = nextW().id;
   saveState();
   resetSession(); rstW();
-  alert(`✓ ${w.name} kaydedildi!\n────────────\nSüre: ${mins} dk\nHareket: ${completed.length}\nTamamlanan set: ${totalSets}\nToplam kalori: ${totalCal} kcal\n────────────\nSıradaki: ${activeW().name}`);
+  buzz([60, 40, 60]);
+  showSummary(w.name, { mins, moves: completed.length, sets: totalSets, cal: totalCal, ups: ups.length, next: activeW().name });
   renderAll();
 }
+
+// Kayıt sonrası özet: alert yerine düzgün bir alt pencere.
+function showSummary(name, s){
+  document.getElementById('sum-title').textContent = '✓ ' + name + ' kaydedildi';
+  document.getElementById('sum-body').innerHTML = `
+    <div class="sumrow"><span>Süre</span><b>${s.mins} dk</b></div>
+    <div class="sumrow"><span>Hareket</span><b>${s.moves}</b></div>
+    <div class="sumrow"><span>Tamamlanan set</span><b>${s.sets}</b></div>
+    <div class="sumrow"><span>Tahmini kalori</span><b>${s.cal} kcal</b></div>
+    <div class="sumrow"><span>Ağırlık artırmaya hazır</span><b>${s.ups} hareket</b></div>
+    <div class="sumrow"><span>Sıradaki antrenman</span><b>${esc(s.next)}</b></div>`;
+  document.getElementById('ovl2').classList.add('open');
+}
+function closeSummary(){ document.getElementById('ovl2').classList.remove('open'); }
 function deleteLog(logId){
   if (!confirm('Bu antrenman kaydı silinsin mi?')) return;
   state.logs = state.logs.filter(l => l.id !== logId);
@@ -639,16 +1067,18 @@ function exportData(){
     a.download = 'antrenman-yedek-' + new Date().toISOString().slice(0, 10) + '.json';
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+    toast('✓ Yedek indirildi.');
   } catch(e) {
-    alert('Dosya indirilemedi ama JSON aşağıdaki kutuya yazıldı — oradan kopyalayabilirsin.');
+    toast('İndirme olmadı ama JSON kutuya yazıldı — oradan kopyala.', 'err');
   }
 }
 function applyImport(raw){
   const parsed = safeParse(raw);
-  if (!isValidState(parsed)) { alert('Geçersiz yedek: JSON okunamadı veya yapı hatalı.'); return; }
+  if (!isValidState(parsed)) { toast('Geçersiz yedek: JSON okunamadı veya yapı hatalı.', 'err'); return; }
   if (!confirm('Mevcut veri, içe aktarılan yedekle DEĞİŞTİRİLECEK.\n(Mevcut halin yedek anahtara kopyalanır, silinmez)\nDevam edilsin mi?')) return;
   localStorage.setItem(LS_STATE + '_onceki_' + Date.now(), JSON.stringify(state));
   state = parsed;
+  normalizeState();
   // Yedekteki aktif antrenman id'si listede yoksa ilk antrenmana düş
   if (!state.workouts.some(w => w.id === state.settings.activeWorkoutId)) {
     state.settings.activeWorkoutId = state.workouts[0].id;
@@ -656,16 +1086,16 @@ function applyImport(raw){
   saveState();
   resetSession(); rstW();
   // dinlenme ayarını yeni veriden yükle
-  rt = state.settings.restSeconds || 90; rs = rt;
+  rt = state.settings.restSeconds || 90;
   document.getElementById('rslider').value = rt;
   document.getElementById('rl').textContent = rt;
   updRD();
   renderAll();
-  alert('✓ Yedek içe aktarıldı.');
+  toast('✓ Yedek içe aktarıldı.');
 }
 function importFromArea(){
   const raw = (document.getElementById('io-area').value || '').trim();
-  if (!raw) { alert('Önce kutuya JSON yapıştır.'); return; }
+  if (!raw) { toast('Önce kutuya JSON yapıştır.', 'err'); return; }
   applyImport(raw);
 }
 function importFromFile(input){
@@ -703,15 +1133,18 @@ function togW(){
   if (timer.wRunning) {
     timer.wBase = wElapsed(); timer.wRunning = false; timer.wStartTs = null;
     clearInterval(wi); wi = null;
+    relWakeLock();
   } else {
     timer.wRunning = true; timer.wStartTs = Date.now();
     wi = setInterval(tickW, 1000);
+    reqWakeLock();
   }
   saveTimer(); tickW();
 }
 function rstW(){
   clearInterval(wi); wi = null;
   timer.wRunning = false; timer.wBase = 0; timer.wStartTs = null;
+  relWakeLock();
   saveTimer();
   const el = document.getElementById('wtime'); if (el) el.textContent = '0:00';
 }
@@ -719,9 +1152,21 @@ function rstW(){
 function rRemaining(){ return timer.rEndTs ? Math.max(0, Math.round((timer.rEndTs - Date.now()) / 1000)) : rt; }
 function setR(v){
   rt = parseInt(v, 10);
-  document.getElementById('rl').textContent = v;
+  document.getElementById('rl').textContent = rt;
   state.settings.restSeconds = rt; saveState();
+  syncRChips();
   if (!timer.rRunning) updRD(rt);
+}
+// Hazır süre chip'i: slider'ı da senkron tutar
+function setRQuick(v){
+  const s = document.getElementById('rslider');
+  if (s) s.value = v;
+  setR(v);
+}
+function syncRChips(){
+  document.querySelectorAll('.tc .chip').forEach(c => {
+    c.classList.toggle('on', parseInt(c.textContent, 10) === rt);
+  });
 }
 function tickR(){
   const rem = rRemaining();
@@ -744,13 +1189,22 @@ function rstR(){
   timer.rRunning = false; timer.rEndTs = null;
   saveTimer(); updRD(rt);
 }
-function updRD(sec){ document.getElementById('rtime').textContent = fmt(sec === undefined ? rRemaining() : sec); }
+function updRD(sec){
+  const v = sec === undefined ? rRemaining() : sec;
+  document.getElementById('rtime').textContent = fmt(v);
+  // Görsel ilerleme çubuğu: kalan süre azaldıkça daralır, son 10 sn turuncuya döner.
+  const p = document.getElementById('rprog');
+  if (p) {
+    p.style.width = Math.max(0, Math.min(100, (v / Math.max(1, rt)) * 100)) + '%';
+    p.style.background = (timer.rRunning && v <= 10) ? 'var(--accent2)' : 'var(--accent)';
+  }
+}
 
 // Uygulama arka plandan öne dönünce sayaçları anında doğru değere senkronla.
 // Dinlenme süresi arka plandayken dolduysa, öne döner dönmez zili çal.
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState !== 'visible') return;
-  if (timer.wRunning) tickW();
+  if (timer.wRunning) { tickW(); reqWakeLock(); }
   if (timer.rRunning) tickR();
 });
 function bell(){
@@ -765,6 +1219,40 @@ function bell(){
       o.start(c.currentTime + d); o.stop(c.currentTime + d + .4);
     });
   } catch(e) {}
+  // Telefon sessizdeyse veya başka sekmedeysen bile fark et diye:
+  buzz([200, 100, 200]);
+  flashTitle('⏰ Dinlenme bitti!');
+  toast('⏰ Dinlenme bitti — sıradaki set!');
+}
+
+// Sekme başlığını birkaç saniye yanıp söndürür (başka sekmedeyken dikkat çeker)
+let _tflash = null;
+function flashTitle(msg){
+  const orig = 'Antrenman Takip v5';
+  clearInterval(_tflash);
+  let on = false;
+  _tflash = setInterval(() => { document.title = (on = !on) ? msg : orig; }, 900);
+  setTimeout(() => { clearInterval(_tflash); document.title = orig; }, 6000);
+}
+
+/* =========================================================
+   EKRAN KİLİDİ ENGELİ (Wake Lock)
+   Antrenman sayacı çalışırken telefonun ekranı kararmasın diye.
+   Destek yoksa (eski tarayıcı) sessizce hiçbir şey yapmaz.
+   Tarayıcı sekme arka plana gidince kilidi otomatik bırakır;
+   geri dönünce visibilitychange içinde tekrar isteriz.
+   ========================================================= */
+let wakeLock = null;
+async function reqWakeLock(){
+  try {
+    if ('wakeLock' in navigator && timer.wRunning && document.visibilityState === 'visible') {
+      wakeLock = await navigator.wakeLock.request('screen');
+    }
+  } catch(e) { /* izin verilmedi / desteklenmiyor — sorun değil */ }
+}
+function relWakeLock(){
+  try { wakeLock && wakeLock.release(); } catch(e) {}
+  wakeLock = null;
 }
 
 /* =========================================================
@@ -773,13 +1261,14 @@ function bell(){
 function cardHTML(ex, i, wId){
   const en = session.data[ex.id] || { setsDone: [] };
   const lw = lastWeight(ex.id);
-  const startW = lw !== null ? lw : ex.weight;
+  const adv = progressionAdvice(ex);
+  const startW = plannedWeight(ex);
   const bw = num(ex.weight, 0) === 0;                       // vücut ağırlığı hareketi
   const curW = num(en.weight, startW);
   const curR = num(en.reps, ex.reps);
   const c = calPerSet(ex, curW, curR);
   const doneCount = (en.setsDone || []).filter(Boolean).length;
-  const allDone = doneCount === ex.sets;
+  const allDone = doneCount >= ex.sets;
   const exCal = doneCount * c;
   const manual = ex.calPerSet && ex.calPerSet > 0;
 
@@ -797,7 +1286,8 @@ function cardHTML(ex, i, wId){
     setsH += `<div class="sr"><span class="sl">Set ${j+1}</span><div class="sb${sd ? ' on' : ''}" onclick="togSet('${ex.id}',${j})">${sd ? '✓ Tamamlandı' : 'Tamamla'}</div><span class="sc">${sd ? '+' : ''}${c} kcal</span></div>`;
   }
 
-  return `<div class="card${allDone ? ' done' : ''}" id="card-${ex.id}">
+  const isFocus = focusExercise()?.id === ex.id;
+  return `<div class="card${allDone ? ' done' : ''}${isFocus ? ' focus-card' : ''}" id="card-${ex.id}">
     <div class="ch">
       <div class="cnum">${allDone ? '✓' : i + 1}</div>
       <div class="ci">
@@ -807,17 +1297,22 @@ function cardHTML(ex, i, wId){
           ${(ex.muscles || []).map(m => `<span class="tag tm">${esc(m)}</span>`).join('')}
           ${!bw ? `<span class="tag ts">Başlangıç: ${startW}kg</span>` : ''}
           <span class="tag tp">${ex.sets}×${ex.reps}</span>
+          <span class="tag adv-${adv.type}">${esc(adv.short)}</span>
           ${manual ? '<span class="tag tk">kcal: manuel</span>' : ''}
         </div>
       </div>
       <div class="cbox"><div class="cbox-n">${exCal > 0 ? exCal : '—'}</div><div class="cbox-l">kcal</div></div>
     </div>
     <div class="vrow">
-      ${ex.video ? `<a href="${esc(ex.video)}" target="_blank" rel="noopener noreferrer" class="vlink">▶ Nasıl yapılır</a>` : '<span></span>'}
+      <a href="${esc(videoUrl(ex))}" target="_blank" rel="noopener noreferrer" class="vlink">▶ Nasıl yapılır</a>
       <button class="mini" onclick="openExModal('${wId}','${ex.id}')">✎ Düzenle</button>
     </div>
     ${!bw ? `<div class="inp-row">
-      <div class="ig"><label class="il">Ağırlık (kg)</label><input class="inp winp" type="number" inputmode="decimal" value="${en.weight ?? startW}" oninput="onField('${ex.id}','weight',this.value)"></div>
+      <div class="ig"><label class="il">Ağırlık (kg)</label><div class="wgrp">
+        <button class="stp" onclick="stepW('${ex.id}',-2.5)">−</button>
+        <input class="inp winp" type="number" inputmode="decimal" value="${en.weight ?? startW}" oninput="onField('${ex.id}','weight',this.value)">
+        <button class="stp" onclick="stepW('${ex.id}',2.5)">+</button>
+      </div></div>
       <div class="ig"><label class="il">Tekrar</label><input class="inp rinp" type="number" inputmode="numeric" value="${en.reps ?? ex.reps}" oninput="onField('${ex.id}','reps',this.value)"></div>
     </div>` : `<div style="padding:8px 12px 0;font-size:11px;color:var(--muted)">Vücut ağırlığı — ${ex.reps} sn/tekrar</div>`}
     <div class="sets">
@@ -832,7 +1327,60 @@ function cardHTML(ex, i, wId){
   </div>`;
 }
 
+
+function renderTodayPanel(){
+  const el = document.getElementById('todayPanel');
+  if (!el) return;
+  const w = activeW();
+  const exs = wExercises(w);
+  const week = weeklySummary();
+  const pending = pendingProgressionHTML();
+  if (!exs.length) {
+    el.innerHTML = pending + `<div class="focus"><div class="fx-kicker">Bugünkü görev</div><div class="fx-title">Bu antrenman boş</div><div class="fx-sub">Yönet sekmesinden ilk hareketi ekle.</div></div>`;
+    return;
+  }
+  const totalSets = exs.reduce((s,ex)=>s+(ex.sets || 0),0);
+  const doneSets = exs.reduce((s,ex)=>s+completedSets(ex.id),0);
+  const next = focusExercise();
+  const weekLine = `<div class="weekline">
+    <div class="wmini"><div class="wmini-n">${week.workouts}</div><div class="wmini-l">Hafta Antr.</div></div>
+    <div class="wmini"><div class="wmini-n">${week.sets}</div><div class="wmini-l">Set</div></div>
+    <div class="wmini"><div class="wmini-n">${week.cardioMin}</div><div class="wmini-l">Kardiyo dk</div></div>
+    <div class="wmini"><div class="wmini-n">${Math.round(week.kcal)}</div><div class="wmini-l">Tah. kcal</div></div>
+  </div>`;
+  if (!next) {
+    el.innerHTML = pending + `<div class="focus ready">
+      <div class="fx-top"><div><div class="fx-kicker">Bugünkü görev</div><div class="fx-title">Setler bitti, kral.</div><div class="fx-sub">${esc(w.name)} · ${doneSets}/${totalSets} set tamamlandı</div></div><div class="fx-badge">KAYDA HAZIR</div></div>
+      <div class="coach">Şimdi en kritik hamle: bitirdiysen aşağıdaki “Antrenmanı Tamamla ve Kaydet” butonuna bas. Kaydetmediğin antrenman, hafızası olmayan balık gibidir.</div>
+      ${weekLine}
+    </div>`;
+    return;
+  }
+  const en = session.data[next.id] || {};
+  const adv = progressionAdvice(next);
+  const weight = num(en.weight, adv.suggestedWeight ?? lastWeight(next.id) ?? next.weight);
+  const reps = num(en.reps, next.reps);
+  const done = completedSets(next.id);
+  const bw = num(next.weight,0) === 0;
+  el.innerHTML = pending + `<div class="focus">
+    <div class="fx-top">
+      <div>
+        <div class="fx-kicker">Sıradaki hareket</div>
+        <div class="fx-title">${esc(next.name)}</div>
+        <div class="fx-sub">${bw ? `${reps} sn/tekrar` : `${weight} kg × ${reps} tekrar`} · ${done}/${next.sets} set · ${esc(w.name)}</div>
+      </div>
+      <div class="fx-badge">${doneSets}/${totalSets} SET</div>
+    </div>
+    <div class="coach">${esc(adv.text)}</div>
+    <div class="fx-actions"><button class="bigact" onclick="completeNextSet('${next.id}')">✓ Sıradaki seti tamamla</button><button class="sideact" onclick="jumpToExercise('${next.id}')">Karta git</button></div>
+    <div class="pillrow"><button class="mini" onclick="applyTodaySuggestions()">Bugünün önerilen kilolarını işle</button><span class="pill">Kayıt artık önerilen kiloyu da baz alır</span></div>
+    ${weekLine}
+  </div>`;
+}
+
 function renderWorkoutPage(){
+  renderWChips();
+  renderTodayPanel();
   const w = activeW();
   const list = document.getElementById('exlist');
   const exs = wExercises(w);
@@ -874,16 +1422,33 @@ function updateTotalCal(){ document.getElementById('totcal').textContent = sessi
 /* =========================================================
    RENDER — GEÇMİŞ SAYFASI
    ========================================================= */
+let histFilter = 'all';
+let _histNames = [];
+// Chip'e ada değil indekse göre bağlanıyoruz: seans adında tırnak/özel karakter
+// olsa bile onclick içindeki string bozulmaz.
+function setHistFilterIdx(i){ histFilter = i === -1 ? 'all' : (_histNames[i] ?? 'all'); renderHistory(); }
 function renderHistory(){
   const el = document.getElementById('hc');
-  const logs = state.logs.slice().reverse();
+  let logs = state.logs.slice().reverse();
   if (!logs.length) { el.innerHTML = '<div class="empty">Henüz antrenman yok.</div>'; return; }
-  el.innerHTML = logs.map(l => {
+
+  // Seans adına göre filtre chip'leri (birden fazla seans türü varsa göster)
+  _histNames = [...new Set(state.logs.map(l => l.workoutName).filter(Boolean))];
+  let chipsH = '';
+  if (_histNames.length > 1) {
+    if (histFilter !== 'all' && !_histNames.includes(histFilter)) histFilter = 'all';
+    chipsH = `<div class="fchips"><span class="chip${histFilter === 'all' ? ' on' : ''}" onclick="setHistFilterIdx(-1)">Tümü</span>` +
+      _histNames.map((n, i) => `<span class="chip${histFilter === n ? ' on' : ''}" onclick="setHistFilterIdx(${i})">${esc(n)}</span>`).join('') + '</div>';
+    if (histFilter !== 'all') logs = logs.filter(l => l.workoutName === histFilter);
+  }
+
+  el.innerHTML = chipsH + (logs.length ? '' : '<div class="empty">Bu filtrede kayıt yok.</div>') + logs.map(l => {
     const exl = Object.keys(l.entries || {}).map(exId => {
       const d = l.entries[exId];
       const sc = d.setsDone ? d.setsDone.filter(Boolean).length : 0;
       if (!sc) return '';
-      return `${esc(d.name || exId)}: ${d.weight ?? '—'}kg × ${sc}set${d.calories ? ' (' + d.calories + 'kcal)' : ''}`;
+      const notePart = d.note ? ` <span style="color:var(--accent);font-style:italic">· ${esc(d.note)}</span>` : '';
+      return `${esc(d.name || exId)}: ${d.weight ?? '—'}kg × ${sc}set${d.calories ? ' (' + d.calories + 'kcal)' : ''}${notePart}`;
     }).filter(Boolean).join('<br>');
     return `<div class="wi">
       <div class="wih">
@@ -898,6 +1463,19 @@ function renderHistory(){
 /* =========================================================
    RENDER — İSTATİSTİK SAYFASI
    ========================================================= */
+// Kütüphanesiz mini çizgi grafik (sparkline): ağırlık gelişimini
+// tek bakışta gösterir. 2'den az veri varsa çizecek şey yok, boş döner.
+function sparkSVG(vals){
+  if (!vals || vals.length < 2) return '';
+  const w = 120, h = 28;
+  const min = Math.min(...vals), max = Math.max(...vals);
+  const rng = (max - min) || 1;
+  const pts = vals.map((v, i) =>
+    `${(i / (vals.length - 1) * w).toFixed(1)},${(h - 3 - ((v - min) / rng) * (h - 6)).toFixed(1)}`
+  ).join(' ');
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
+}
+
 function renderStats(){
   const el = document.getElementById('sc');
   const logs = state.logs;
@@ -912,12 +1490,29 @@ function renderStats(){
     totalSets += d.setsDone ? d.setsDone.filter(Boolean).length : 0;
   }));
 
+  // Toplam hacim = set × kilo × tekrar (kaldırılan toplam yük).
+  // İlerlemenin en dürüst tek sayısı budur: kilo aynı kalsa bile set/tekrar artıyorsa hacim artar.
+  let totalVol = 0;
+  logs.forEach(l => Object.values(l.entries || {}).forEach(d => { totalVol += logVolumeEntry(d); }));
+
   let html = `<div class="sum">
     <div class="sumc"><div class="sumn">${totalW}</div><div class="suml">Toplam Antrenman</div></div>
     <div class="sumc"><div class="sumn">${totalCal}</div><div class="suml">Toplam kcal</div></div>
     <div class="sumc"><div class="sumn">${totalSets}</div><div class="suml">Tamamlanan Set</div></div>
     <div class="sumc"><div class="sumn">${totalMin}</div><div class="suml">Toplam Dakika</div></div>
+    <div class="sumc"><div class="sumn">${totalVol.toLocaleString('tr-TR')}</div><div class="suml">Toplam Hacim (kg)</div></div>
+    <div class="sumc"><div class="sumn">${totalW ? Math.round(totalMin / totalW) : 0}</div><div class="suml">Ort. Süre (dk)</div></div>
   </div>`;
+
+  const week = weeklySummary();
+  html += `<div class="sect">Bu Hafta</div><div class="sum">
+    <div class="sumc"><div class="sumn">${week.workouts}</div><div class="suml">Antrenman</div></div>
+    <div class="sumc"><div class="sumn">${week.sets}</div><div class="suml">Set</div></div>
+    <div class="sumc"><div class="sumn">${week.cardioMin}</div><div class="suml">Kardiyo dk</div></div>
+    <div class="sumc"><div class="sumn">${Math.round(week.kcal)}</div><div class="suml">Tah. kcal</div></div>
+  </div>`;
+
+  html += coachReportHTML();
 
   // son 5 antrenman
   const last5 = logs.slice(-5).reverse();
@@ -936,7 +1531,9 @@ function renderStats(){
     const maxW = weights.length ? Math.max(...weights) : '—';
     const totC = eh.reduce((s, x) => s + (x.calories || 0), 0);
     const totS = eh.reduce((s, x) => s + (x.setsDone ? x.setsDone.filter(Boolean).length : 0), 0);
-    return `<div class="si"><div class="sin">${esc(name)}</div>
+    // eh en yeniden eskiye sıralı; grafik için ters çevirip kronolojik yapıyoruz
+    const chron = eh.slice().reverse().map(x => num(x.weight, NaN)).filter(v => !isNaN(v));
+    return `<div class="si"><div class="sin"><span>${esc(name)}</span>${sparkSVG(chron)}</div>
       <div class="sr2"><span class="sl2">Son ağırlık</span><span class="sv">${eh[0].weight ?? '—'} kg</span></div>
       <div class="sr2"><span class="sl2">En yüksek</span><span class="sv">${maxW} kg</span></div>
       <div class="sr2"><span class="sl2">Tamamlanan set</span><span class="sv">${totS}</span></div>
@@ -967,8 +1564,8 @@ function addCardio(){
   const spd = num(document.getElementById('c-spd').value, null);
   const inc = num(document.getElementById('c-inc').value, 0);
   const wgt = num(document.getElementById('c-wgt').value, state.settings.bodyWeightKg || 75);
-  if (!dur || dur <= 0) { alert('Süre gerekli (dakika).'); return; }
-  if (!spd || spd <= 0) { alert('Hız gerekli (km/saat).'); return; }
+  if (!dur || dur <= 0) { toast('Süre gerekli (dakika).', 'err'); return; }
+  if (!spd || spd <= 0) { toast('Hız gerekli (km/saat).', 'err'); return; }
   const kcal = Math.round(walkKcal(wgt, spd, inc, dur));
   state.cardioLog.push({
     id: uid(), date: todayStr(), time: nowTimeStr(),
@@ -979,6 +1576,8 @@ function addCardio(){
   document.getElementById('c-spd').value = '';
   document.getElementById('c-inc').value = '';
   renderCardio();
+  buzz(40);
+  toast(`✓ Kardiyo kaydedildi — ${kcal} kcal`);
 }
 function deleteCardio(id){
   if (!confirm('Bu kaydı sil?')) return;
@@ -1031,6 +1630,121 @@ function renderCardio(){
   el.innerHTML = html;
 }
 
+
+const PROGRAM_TEMPLATES = {
+  fullbody3: {
+    title:'3 Gün Full Body',
+    sub:'Yeni başlayan / kilo verirken kas koruma. A-B-C, haftada 3 gün.',
+    workouts:[
+      {name:'Full Body A', exercises:[
+        ['Leg Press',['Bacak'],2,15,80,'Kontrollü in, hızlı kilitleme yok'],
+        ['Chest Press',['Göğüs','Triceps'],3,12,20,'Makinede sabit form'],
+        ['Lat Pulldown',['Sırt','Biceps'],3,12,25,'Göğse doğru çek'],
+        ['Dumbbell Shoulder Press',['Omuz','Triceps'],2,12,10,'Bel boşluğunu abartma'],
+        ['Plank',['Core'],3,30,0,'Süre hedefi']
+      ]},
+      {name:'Full Body B', exercises:[
+        ['Goblet Squat',['Bacak','Core'],3,12,12,'Dizleri içeri kaçırma'],
+        ['Incline Dumbbell Press',['Göğüs','Omuz'],3,12,12,'Üst göğüs odaklı'],
+        ['Seated Cable Row',['Sırt','Biceps'],3,12,25,'Kürek kemiklerini sık'],
+        ['Lateral Raise',['Omuz'],3,15,5,'Ağırlığı değil yan omzu hisset'],
+        ['Dead Bug',['Core'],3,12,0,'Bel yere yakın']
+      ]},
+      {name:'Full Body C', exercises:[
+        ['Romanian Deadlift',['Hamstring','Kalça','Sırt'],3,10,20,'Kalçadan kırıl'],
+        ['Push-up / Machine Press',['Göğüs','Triceps'],3,10,0,'Gerekirse makine'],
+        ['One Arm Dumbbell Row',['Sırt','Biceps'],3,12,12,'Bel sabit'],
+        ['Hammer Curl',['Biceps','Ön Kol'],2,12,8,'Dirsek sabit'],
+        ['Triceps Pushdown',['Triceps'],2,12,15,'Omuz oynama']
+      ]}
+    ]
+  },
+  upperlower4: {
+    title:'Üst / Alt 4 Gün',
+    sub:'Daha düzenli gidenler için. Üst-alt tekrar eder.',
+    workouts:[
+      {name:'Üst A', exercises:[
+        ['Chest Press',['Göğüs','Triceps'],3,10,25,'Ana itiş'],
+        ['Lat Pulldown',['Sırt','Biceps'],3,10,30,'Ana çekiş'],
+        ['Shoulder Press',['Omuz'],3,10,12,'Dikey itiş'],
+        ['Cable Row',['Sırt'],3,12,30,'Orta sırt'],
+        ['Biceps Curl',['Biceps'],2,12,8,'Kol destek'],
+        ['Triceps Pushdown',['Triceps'],2,12,18,'Kol destek']
+      ]},
+      {name:'Alt A', exercises:[
+        ['Leg Press',['Bacak'],4,12,100,'Ana bacak'],
+        ['Leg Curl',['Hamstring'],3,12,30,'Arka bacak'],
+        ['Calf Raise',['Bacak'],3,15,40,'Baldır'],
+        ['Plank',['Core'],3,35,0,'Core'],
+        ['Treadmill Walk',['Kardiyo'],1,20,0,'Kardiyo notu']
+      ]},
+      {name:'Üst B', exercises:[
+        ['Incline Dumbbell Press',['Göğüs','Omuz'],3,12,14,'Üst göğüs'],
+        ['One Arm Row',['Sırt'],3,12,14,'Tek taraf'],
+        ['Lateral Raise',['Omuz'],3,15,6,'Yan omuz'],
+        ['Face Pull',['Omuz','Sırt'],3,15,15,'Arka omuz'],
+        ['Hammer Curl',['Biceps','Ön Kol'],2,12,8,'Kol'],
+        ['Overhead Triceps Extension',['Triceps'],2,12,10,'Kol']
+      ]},
+      {name:'Alt B', exercises:[
+        ['Goblet Squat',['Bacak','Core'],3,12,16,'Teknik gün'],
+        ['Romanian Deadlift',['Hamstring','Kalça'],3,10,25,'Posterior chain'],
+        ['Walking Lunge',['Bacak'],2,12,0,'Adım başı'],
+        ['Side Plank',['Core'],3,25,0,'Yan core'],
+        ['Treadmill Incline Walk',['Kardiyo'],1,20,0,'Eğimli yürüyüş']
+      ]}
+    ]
+  }
+};
+function makeExFromTemplate(row){
+  const [name,muscles,sets,reps,weight,note] = row;
+  return { id:uid(), name, muscles, sets, reps, weight, calPerSet:null, video:'', note };
+}
+function installTemplate(key, btn){
+  const tpl = PROGRAM_TEMPLATES[key];
+  const status = document.getElementById('tpl-status');
+  if (!tpl) {
+    if (status) status.textContent = 'Şablon bulunamadı.';
+    toast('Şablon bulunamadı.', 'err');
+    return;
+  }
+
+  try {
+    if (btn) { btn.disabled = true; btn.style.opacity = '.65'; }
+    if (!Array.isArray(state.workouts)) state.workouts = [];
+    if (!state.exercises || typeof state.exercises !== 'object') state.exercises = {};
+
+    const newWs = [];
+    tpl.workouts.forEach(wt => {
+      const ids = [];
+      wt.exercises.forEach(row => {
+        const ex = makeExFromTemplate(row);
+        state.exercises[ex.id] = ex;
+        ids.push(ex.id);
+      });
+      const w = { id:uid(), name:wt.name, exerciseIds:ids };
+      state.workouts.push(w);
+      newWs.push(w);
+    });
+
+    if (!newWs.length) throw new Error('Şablonda eklenecek seans yok.');
+
+    state.settings.activeWorkoutId = newWs[0].id;
+    resetSession();
+    rstW();
+    saveState();
+    renderAll();
+    showTab('w');
+
+    toast(`${tpl.title} eklendi — ${newWs.length} seans oluşturuldu, ilki aktif ✓`);
+  } catch (e) {
+    console.error(e);
+    if (status) status.textContent = 'Şablon eklenemedi: ' + (e.message || e);
+    toast('Şablon eklenemedi: ' + (e.message || e), 'err');
+  } finally {
+    if (btn) { btn.disabled = false; btn.style.opacity = '1'; }
+  }
+}
 /* =========================================================
    RENDER — YÖNET SAYFASI
    ========================================================= */
@@ -1042,7 +1756,8 @@ function renderManage(){
       <div class="fld"><label>Vücut ağırlığı (kg)</label><input class="inp" type="number" inputmode="decimal" value="${state.settings.bodyWeightKg}" onchange="state.settings.bodyWeightKg=num(this.value,75);saveState();renderWorkoutPage()"></div>
       <div class="fld"><label>Dinlenme (sn)</label><input class="inp" type="number" inputmode="numeric" value="${state.settings.restSeconds}" onchange="setR(this.value);document.getElementById('rslider').value=this.value"></div>
     </div>
-    <div style="font-size:10px;color:var(--muted)">Vücut ağırlığı otomatik kalori tahmininde kullanılır.</div>
+    <div style="font-size:10px;color:var(--muted)">Vücut ağırlığı otomatik kalori tahmininde kullanılır. Antrenman sayacı çalışırken ekran otomatik kararmaz (destekleyen tarayıcılarda).</div>
+    <button class="btn ghost" id="pwa-install" style="width:100%;margin-top:10px;display:${deferredPrompt ? 'block' : 'none'}" onclick="installPWA()">📲 Uygulamayı Ana Ekrana Kur</button>
   </div>
 
   <div class="sect">Veri Yedekleme</div>
@@ -1057,6 +1772,15 @@ function renderManage(){
     </div>
     <button class="btn ghost" style="width:100%" onclick="importFromArea()">⬆ Metinden İçe Aktar</button>
     <div style="font-size:10px;color:var(--muted);margin-top:6px">Telefonda site verileri silinirse tüm geçmiş gider — arada bir yedek almayı unutma.</div>
+  </div>
+
+  <div class="sect">Hazır Program Şablonları</div>
+  <div class="mw" style="padding:10px 12px;margin-bottom:8px">
+    <div style="font-size:11px;color:var(--muted);line-height:1.55">Şablona dokununca mevcut programların silinmez; yeni seanslar alta eklenir ve ilk seans aktif yapılır.</div>
+    <div id="tpl-status" style="font-size:11px;color:var(--accent);margin-top:6px"></div>
+  </div>
+  <div class="quickgrid">
+    ${Object.keys(PROGRAM_TEMPLATES).map(k => `<button type="button" class="qcard" onclick="installTemplate('${k}', this)"><div class="qtitle">${esc(PROGRAM_TEMPLATES[k].title)}</div><div class="qsub">${esc(PROGRAM_TEMPLATES[k].sub)}<br><strong>Dokun: programı ekle</strong></div></button>`).join('')}
   </div>
 
   <div class="sect">Yeni Antrenman</div>
@@ -1103,14 +1827,24 @@ let curTab = 'w';
 
 function renderHeader(){
   document.getElementById('dt').textContent = new Date().toLocaleDateString('tr-TR', { weekday:'long', day:'numeric', month:'long' });
-  const sel = document.getElementById('wsel');
-  sel.innerHTML = state.workouts.map(w => `<option value="${w.id}"${w.id === state.settings.activeWorkoutId ? ' selected' : ''}>${esc(w.name)}</option>`).join('');
   document.getElementById('ns').textContent = state.workouts.length > 1 ? nextW().name : '—';
+}
+
+// Ana ekrandaki seans seçim şeridi: TÜM antrenmanlar burada.
+// Aktif olan sarı yanar; başka birine dokununca setActiveWorkout devreye girer
+// (devam eden setin varsa zaten onay soruyor, veri kaybı olmaz).
+// "+" chip'i Yönet'e götürür — yeni seans / şablon oradan eklenir.
+function renderWChips(){
+  const el = document.getElementById('wchips');
+  if (!el) return;
+  el.innerHTML = state.workouts.map(w =>
+    `<button class="wchip${w.id === state.settings.activeWorkoutId ? ' on' : ''}" onclick="setActiveWorkout('${w.id}')">${esc(w.name)}</button>`
+  ).join('') + `<button class="wchip add" onclick="showTab('m')">+ Yeni</button>`;
 }
 
 function showTab(t){
   curTab = t;
-  document.querySelectorAll('.tab').forEach((b, i) => b.classList.toggle('on', ['w','h','s','k','m'][i] === t));
+  document.querySelectorAll('.tab').forEach(b => b.classList.toggle('on', b.dataset.tab === t));
   ['w','h','s','k','m'].forEach(k => document.getElementById('page-' + k).classList.toggle('on', k === t));
   if (t === 'h') renderHistory();
   if (t === 's') renderStats();
@@ -1130,6 +1864,22 @@ function renderAll(){
 /* =========================================================
    BAŞLANGIÇ
    ========================================================= */
+/* Tarayıcının "ana ekrana ekle" teklifini yakala; Yönet sekmesinde butonla sun. */
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const b = document.getElementById('pwa-install');
+  if (b) b.style.display = 'block';
+});
+function installPWA(){
+  if (!deferredPrompt) { toast('Kurulum şu an sunulmuyor — tarayıcı menüsünden "Ana ekrana ekle"yi dene.'); return; }
+  deferredPrompt.prompt();
+  deferredPrompt = null;
+  const b = document.getElementById('pwa-install');
+  if (b) b.style.display = 'none';
+}
+
 function init(){
   loadState();
   loadSession();
@@ -1137,11 +1887,19 @@ function init(){
   rt = state.settings.restSeconds || 90;
   document.getElementById('rslider').value = rt;
   document.getElementById('rl').textContent = rt;
+  syncRChips();
   tickW();
-  if (timer.wRunning) wi = setInterval(tickW, 1000);
+  if (timer.wRunning) { wi = setInterval(tickW, 1000); reqWakeLock(); }
   if (timer.rRunning) { ri = setInterval(tickR, 1000); tickR(); } else { updRD(rt); }
-  document.getElementById('wsel').onchange = e => setActiveWorkout(e.target.value);
   document.getElementById('ovl').addEventListener('click', e => { if (e.target.id === 'ovl') closeModal(); });
+  document.getElementById('ovl-w').addEventListener('click', e => { if (e.target.id === 'ovl-w') closeWModal(); });
+  document.getElementById('ovl2').addEventListener('click', e => { if (e.target.id === 'ovl2') closeSummary(); });
+  // Sayı inputuna dokununca içeriği seç: "20"nin yanına yanlışlıkla "520" yazma derdi biter
+  document.addEventListener('focusin', e => {
+    if (e.target && e.target.matches && e.target.matches('input[type=number]')) {
+      try { e.target.select(); } catch(err) {}
+    }
+  });
   renderAll();
 }
 init();
@@ -1151,7 +1909,9 @@ init();
 // (tarayıcı adres çubuğu olmadan, offline) açılabilmesini sağlar.
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
+    navigator.serviceWorker.register('./sw.js')
+      .then((reg) => { reg.update().catch(() => {}); })
+      .catch(() => {});
   });
 }
 </script>
