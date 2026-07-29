@@ -10,14 +10,14 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Antrenman">
-<title>Antrenman Takip 6.0</title>
+<title>Antrenman Takip 6.1</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <div class="app">
  <header class="header">
   <div class="header-row">
-   <div class="brand"><div class="brand-mark">M</div><div><div class="brand-title">Antrenman <span class="version">v6.0</span></div><div class="brand-sub" id="dateText"></div></div></div>
+   <div class="brand"><div class="brand-mark">M</div><div><div class="brand-title">Antrenman <span class="version">v6.1</span></div><div class="brand-sub" id="dateText"></div></div></div>
    <select class="workout-select" id="workoutSelect" aria-label="Antrenman seç"></select>
   </div>
   <div class="tabs">
@@ -72,5 +72,6 @@
 <input id="importFile" class="hidden" type="file" accept="application/json" onchange="importData(this.files[0])">
 <div class="toast" id="toast"></div>
 <script src="app.js"></script>
+<script src="program-patch.js"></script>
 </body>
 </html>
