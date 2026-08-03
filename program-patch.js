@@ -1,14 +1,14 @@
 "use strict";
 
 (() => {
-  const PROGRAM_VERSION = "2026-07-29-final-1";
+  const PROGRAM_VERSION = "2026-08-03-final-2";
 
   const finalExercises = {
     v3_flat_press: ex(
       "v3_flat_press",
       "Converging Chest Press (Makine)",
       ["Göğüs", "Triceps"],
-      3, 8, 12, 10,
+      3, 8, 12, 27.5,
       "main", 2.5, 120, false,
       "Yatay veya çok hafif eğimli makineyi kullan. Plaka yüklü makinede kg alanına taraf başı ağırlığı gir.",
       "https://www.youtube.com/results?search_query=converging+machine+chest+press+proper+form",
@@ -18,7 +18,7 @@
       "v2_supported_row",
       "Chest Supported Row (Makine)",
       ["Orta Sırt", "Biceps"],
-      3, 8, 12, 30,
+      3, 8, 12, 32.5,
       "main", 2.5, 120, false,
       "Göğüs pedden ayrılmasın; dirsekleri geriye çek, gövdeyi savurma.",
       "https://www.youtube.com/results?search_query=chest+supported+row+machine+proper+form",
@@ -28,7 +28,7 @@
       "v2_leg_press",
       "45° Leg Press",
       ["Quadriceps", "Kalça"],
-      3, 10, 15, 125,
+      2, 10, 15, 125,
       "main", 5, 120, false,
       "Bel ve kalça pedden kalkmasın; dizleri üstte kilitleme.",
       "https://www.youtube.com/results?search_query=45+degree+leg+press+proper+form"
@@ -75,7 +75,7 @@
       "v2_incline_press",
       "Incline Chest Press (Makine)",
       ["Üst Göğüs", "Triceps"],
-      3, 8, 12, 10,
+      3, 8, 12, 15,
       "main", 2.5, 120, false,
       "Düşük-orta eğim kullan; omuzları geriye ve aşağı sabitle. Ağrı yapan açıya zorlama.",
       "https://www.youtube.com/results?search_query=incline+chest+press+machine+proper+form",
@@ -85,7 +85,7 @@
       "v2_neutral_pulldown",
       "Neutral Grip Lat Pulldown",
       ["Sırt", "Biceps"],
-      3, 8, 12, 40,
+      3, 8, 12, 45,
       "main", 2.5, 120, false,
       "Nötr veya hafif dar tutuş; barı göğsün üstüne kontrollü çek.",
       "https://www.youtube.com/results?search_query=neutral+grip+lat+pulldown+proper+form",
@@ -95,7 +95,7 @@
       "v2_leg_curl",
       "Seated Leg Curl",
       ["Hamstring"],
-      3, 10, 15, 40,
+      3, 10, 15, 41,
       "accessory", 2.5, 90, false,
       "Diz eklemini makinenin dönüş noktasıyla hizala; kalçayı pedden kaldırma.",
       "https://www.youtube.com/results?search_query=seated+leg+curl+proper+form"
@@ -104,7 +104,7 @@
       "v2_face_pull",
       "Reverse Pec Deck",
       ["Arka Omuz", "Orta Sırt"],
-      3, 12, 20, 15,
+      3, 12, 20, 32,
       "accessory", 2.5, 75, false,
       "Göğüs pedde; kolları savurmadan yana ve geriye aç.",
       "https://www.youtube.com/results?search_query=reverse+pec+deck+proper+form",
@@ -114,7 +114,7 @@
       "v2_shrug",
       "Dumbbell Shrug",
       ["Trapez", "Ön Kol"],
-      3, 10, 15, 15,
+      3, 10, 15, 20,
       "accessory", 2.5, 90, false,
       "Kg alanına tek dambılın ağırlığını gir. Omuzları düz yukarı kaldır; çevirmeden indir.",
       "https://www.youtube.com/results?search_query=dumbbell+shrug+proper+form",
@@ -124,7 +124,7 @@
       "v2_hammer",
       "Hammer Curl",
       ["Biceps", "Ön Kol"],
-      2, 10, 15, 10,
+      3, 10, 15, 10,
       "accessory", 1, 75, true,
       "Kg alanına tek dambılın ağırlığını gir; dirsek sabit, negatif kontrollü.",
       "https://www.youtube.com/results?search_query=hammer+curl+proper+form"
@@ -133,7 +133,7 @@
       "v3_overhead_extension",
       "Overhead Rope Triceps Extension",
       ["Triceps"],
-      2, 10, 15, 11,
+      3, 10, 15, 13.5,
       "accessory", 5.5, 75, true,
       "Dirsekleri mümkün olduğunca sabit tut; omuzda rahatsızlık olursa hareketi atla.",
       "https://www.youtube.com/results?search_query=overhead+rope+triceps+extension+proper+form"
@@ -171,24 +171,32 @@
     }
   ];
 
-  if (state.settings.programVersion !== PROGRAM_VERSION) {
+  const hasFinalStructure = Boolean(
+    state.exercises?.v3_flat_press &&
+    state.exercises?.v3_overhead_extension &&
+    state.workouts?.some(workout => workout.id === "v2_a") &&
+    state.workouts?.some(workout => workout.id === "v2_b")
+  );
+
+  if (state.programVersion !== PROGRAM_VERSION && !hasFinalStructure) {
     Object.entries(finalExercises).forEach(([id, exercise]) => {
       state.exercises[id] = normalizeExercise(exercise);
     });
 
     state.workouts = finalWorkouts;
-    state.settings.programVersion = PROGRAM_VERSION;
 
     if (!finalWorkouts.some(workout => workout.id === state.settings.activeWorkoutId)) {
       state.settings.activeWorkoutId = "v2_a";
     }
 
-    saveState();
     resetSession();
     toast("Güncel A/B programı yüklendi.");
   }
 
+  state.programVersion = PROGRAM_VERSION;
+  saveState();
+
   const versionLabel = document.querySelector(".version");
-  if (versionLabel) versionLabel.textContent = "v6.1";
+  if (versionLabel) versionLabel.textContent = "v6.2";
   renderAll();
 })();
