@@ -10,15 +10,16 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Antrenman">
-<title>Antrenman Takip 6.2</title>
+<title>Antrenman Takip 6.3</title>
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="enhancements.css">
+<link rel="stylesheet" href="ux-v63.css">
 </head>
 <body>
 <div class="app">
  <header class="header">
   <div class="header-row">
-   <div class="brand"><div class="brand-mark">M</div><div><div class="brand-title">Antrenman <span class="version">v6.2</span></div><div class="brand-sub" id="dateText"></div></div></div>
+   <div class="brand"><div class="brand-mark">M</div><div><div class="brand-title">Antrenman <span class="version">v6.3</span></div><div class="brand-sub" id="dateText"></div></div></div>
    <select class="workout-select" id="workoutSelect" aria-label="Antrenman seç"></select>
   </div>
   <div class="tabs">
@@ -66,7 +67,7 @@
   <div class="field" style="grid-column:1/-1"><label>Teknik not / alternatif</label><input class="input" id="fNote"></div>
   <label class="check" style="grid-column:1/-1"><input type="checkbox" id="fOptional"> Kısa ve düşük enerji gününde atlanabilir</label>
  </div>
- <div class="modal-actions"><button class="btn ghost" onclick="closeExerciseModal()">Vazgeç</button><button class="btn primary" onclick="saveExerciseModal()">Kaydet</button></div>
+ <div class="modal-actions"><button class="btn ghost" onclick="closeExerciseModal()">Vazgeç</button><button class="btn primary" id="confirmButton">Kaydet</button></div>
 </div></div>
 <div class="overlay" id="confirmModal"><div class="modal"><div class="modal-title" id="confirmTitle">Onay</div><div class="mode-note" id="confirmMessage"></div><div class="modal-actions"><button class="btn ghost" onclick="closeConfirm()">Vazgeç</button><button class="btn primary" id="confirmButton">Devam</button></div></div></div>
 <div class="overlay" id="summaryModal"><div class="modal" id="summaryBody"></div></div>
@@ -75,5 +76,6 @@
 <script src="app.js"></script>
 <script src="program-patch.js"></script>
 <script src="enhancements.js"></script>
+<script src="ux-v63.js"></script>
 </body>
 </html>
