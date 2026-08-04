@@ -17,7 +17,7 @@
     workout.exerciseIds.splice(index >= 0 ? index + 1 : workout.exerciseIds.length, 0, exerciseId);
   };
 
-  if (state.settings.uxVersion !== UX_VERSION) {
+  if (state.uxVersion !== UX_VERSION) {
     addExerciseIfMissing(ex(
       "v3_calf_raise",
       "Leg Press Calf Raise",
@@ -44,7 +44,7 @@
     insertAfter(workoutA, "v2_leg_press", "v3_calf_raise");
     insertAfter(workoutB, "v2_leg_curl", "v3_glute_bridge");
 
-    state.settings.uxVersion = UX_VERSION;
+    state.uxVersion = UX_VERSION;
     saveState();
   }
 
