@@ -1,0 +1,34 @@
+/* v6.3 — sade set girişi ve mobil kullanım iyileştirmeleri */
+.v63-exercise{border-radius:20px;overflow:hidden}
+.v63-coach{display:grid;gap:5px;line-height:1.45}
+.v63-status{display:inline-flex;width:max-content;padding:4px 9px;border-radius:999px;background:rgba(106,227,130,.13);color:#8ff0a5;font-weight:800;font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+.v63-set-tools{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0 8px}
+.v63-set-tools button,.v63-warmup-title button{border:1px solid rgba(255,255,255,.1);background:#171b20;color:#dfe5ec;border-radius:10px;padding:8px 11px;font-size:12px;font-weight:700}
+.v63-set-head,.v63-set-row{display:grid;grid-template-columns:38px minmax(112px,1fr) minmax(112px,1fr) 50px;gap:8px;align-items:center}
+.v63-set-head{padding:7px 6px;color:#7f8994;font-size:10px;font-weight:800;text-transform:uppercase;text-align:center}
+.v63-set-row{padding:8px 6px;border-top:1px solid rgba(255,255,255,.055);transition:.18s ease}
+.v63-set-row.done{background:rgba(75,207,108,.055)}
+.v63-set-number{width:32px;height:32px;display:grid;place-items:center;border-radius:10px;background:#171b20;color:#aeb7c1;font-weight:800}
+.v63-stepper{display:grid;grid-template-columns:32px minmax(42px,1fr) 32px;height:42px;border:1px solid rgba(255,255,255,.09);border-radius:12px;overflow:hidden;background:#111419}
+.v63-stepper button{border:0;background:#1a1f25;color:#cbd4dd;font-size:20px;font-weight:500}
+.v63-stepper input{min-width:0;width:100%;border:0;background:transparent;color:#fff;text-align:center;font-size:16px;font-weight:800;outline:0;-moz-appearance:textfield}
+.v63-stepper input::-webkit-outer-spin-button,.v63-stepper input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.v63-static{height:42px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.09);border-radius:12px;background:#111419;color:#98a2ad;font-size:12px;font-weight:700}
+.v63-done{width:44px;height:42px;border:1px solid rgba(255,255,255,.12);border-radius:12px;background:#171b20;color:#8d98a4;font-size:21px;font-weight:900}
+.v63-done.on{background:#64db7f;color:#071109;border-color:#64db7f;box-shadow:0 0 0 3px rgba(100,219,127,.1)}
+.v63-warmups{margin:10px 0 2px;padding:9px;border:1px dashed rgba(255,255,255,.11);border-radius:14px;background:rgba(255,255,255,.018)}
+.v63-warmup-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;color:#a9b3bd;font-size:12px;font-weight:800}
+.v63-warmups .v63-set-row{padding-left:0;padding-right:0}
+.v63-warmups .v63-set-number{background:#232018;color:#e2c278}
+.v63-log-card .log-ex{padding:10px 0;border-bottom:1px solid rgba(255,255,255,.055);line-height:1.55}
+.v63-log-card .log-ex:last-child{border-bottom:0}
+.rir{display:none!important}
+@media(max-width:430px){
+ .v63-set-head,.v63-set-row{grid-template-columns:32px minmax(96px,1fr) minmax(96px,1fr) 44px;gap:5px}
+ .v63-stepper{grid-template-columns:29px minmax(38px,1fr) 29px;height:40px}
+ .v63-stepper button{font-size:18px}
+ .v63-stepper input{font-size:15px}
+ .v63-done{width:40px;height:40px}
+ .v63-set-number{width:29px;height:29px;font-size:12px}
+ .v63-set-tools button{flex:1;padding:9px 6px}
+}
