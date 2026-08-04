@@ -1,5 +1,5 @@
-const CACHE_NAME='antrenman-cache-6.2.0';
-const APP_SHELL=['./index.html','./styles.css','./enhancements.css','./app.js','./program-patch.js','./enhancements.js','./manifest.json','./icon-192.png','./icon-512.png','./apple-touch-icon.png'];
+const CACHE_NAME='antrenman-cache-6.3.0';
+const APP_SHELL=['./index.html','./styles.css','./enhancements.css','./ux-v63.css','./app.js','./program-patch.js','./enhancements.js','./ux-v63.js','./manifest.json','./icon-192.png','./icon-512.png','./apple-touch-icon.png'];
 
 self.addEventListener('install',event=>{
   self.skipWaiting();
