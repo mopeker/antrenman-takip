@@ -10,24 +10,25 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Antrenman">
-<title>Antrenman Takip 6.4</title>
+<title>Antrenman Takip 7.0</title>
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="enhancements.css">
 <link rel="stylesheet" href="ux-v63.css">
+<link rel="stylesheet" href="v7.css">
 </head>
 <body>
 <div class="app">
  <header class="header">
   <div class="header-row">
-   <div class="brand"><div class="brand-mark">M</div><div><div class="brand-title">Antrenman <span class="version">v6.4</span></div><div class="brand-sub" id="dateText"></div></div></div>
+   <div class="brand"><div class="brand-mark">M</div><div><div class="brand-title">Antrenman <span class="version">v7</span></div><div class="brand-sub" id="dateText"></div></div></div>
    <select class="workout-select" id="workoutSelect" aria-label="Antrenman seç"></select>
   </div>
   <div class="tabs">
    <button class="tab on" data-tab="workout" onclick="showTab('workout')">Antrenman</button>
    <button class="tab" data-tab="history" onclick="showTab('history')">Geçmiş</button>
-   <button class="tab" data-tab="analysis" onclick="showTab('analysis')">Analiz</button>
+   <button class="tab" data-tab="analysis" onclick="showTab('analysis')">Gelişim</button>
    <button class="tab" data-tab="cardio" onclick="showTab('cardio')">Kardiyo</button>
-   <button class="tab" data-tab="program" onclick="showTab('program')">Program</button>
+   <button class="tab" data-tab="program" onclick="showTab('program')">Ayarlar</button>
   </div>
  </header>
  <div class="update-banner" id="updateBanner"><span>Yeni sürüm hazır.</span><button onclick="activateUpdate()">Yenile</button></div>
@@ -40,7 +41,7 @@
   <div id="hero"></div>
   <div class="metrics" id="liveMetrics"></div>
   <div id="exerciseList"></div>
-  <button class="btn primary full" style="padding:15px;font-size:13px" onclick="finishWorkout()">Antrenmanı Tamamla</button>
+  <button class="btn primary full" style="padding:15px;font-size:13px" onclick="finishWorkout()">Antrenmanı Bitir</button>
  </main>
  <main class="page" id="page-history"><div id="historyContent"></div></main>
  <main class="page" id="page-analysis"><div id="analysisContent"></div></main>
@@ -67,7 +68,7 @@
   <div class="field" style="grid-column:1/-1"><label>Teknik not / alternatif</label><input class="input" id="fNote"></div>
   <label class="check" style="grid-column:1/-1"><input type="checkbox" id="fOptional"> Kısa ve düşük enerji gününde atlanabilir</label>
  </div>
- <div class="modal-actions"><button class="btn ghost" onclick="closeExerciseModal()">Vazgeç</button><button class="btn primary" onclick="saveExerciseModal()">Kaydet</button></div>
+ <div class="modal-actions"><button class="btn ghost" onclick="closeExerciseModal()">Vazgeç</button><button class="btn primary" id="exerciseSaveButton" onclick="saveExerciseModal()">Kaydet</button></div>
 </div></div>
 <div class="overlay" id="confirmModal"><div class="modal"><div class="modal-title" id="confirmTitle">Onay</div><div class="mode-note" id="confirmMessage"></div><div class="modal-actions"><button class="btn ghost" onclick="closeConfirm()">Vazgeç</button><button class="btn primary" id="confirmButton">Devam</button></div></div></div>
 <div class="overlay" id="summaryModal"><div class="modal" id="summaryBody"></div></div>
@@ -78,5 +79,6 @@
 <script src="enhancements.js"></script>
 <script src="ux-v63.js"></script>
 <script src="program-v64.js"></script>
+<script src="v7.js"></script>
 </body>
 </html>
