@@ -1,0 +1,15 @@
+/* v7.1.1 — iPhone safe header + cleaner workout footer */
+body{padding-top:0!important}
+.header{
+  top:0!important;
+  z-index:90!important;
+  padding-top:calc(10px + env(safe-area-inset-top,0px))!important;
+  margin-top:0!important;
+  background:linear-gradient(180deg,rgba(7,26,51,.995) 0%,rgba(7,26,51,.97) 74%,rgba(7,26,51,.9) 100%)!important;
+  box-shadow:0 8px 18px rgba(0,10,28,.18);
+}
+.bottom{display:none!important}
+body.v7-workout-tab{padding-bottom:calc(28px + var(--v7-nav-h) + var(--bot))!important}
+@supports(padding-top:max(0px)){
+  .header{padding-top:max(10px,env(safe-area-inset-top))!important}
+}
