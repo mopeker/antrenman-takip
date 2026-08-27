@@ -1,5 +1,5 @@
-const CACHE_NAME='antrenman-cache-7.2.2';
-const APP_SHELL=['./index.html','./styles.css','./enhancements.css','./ux-v63.css','./v7.css','./v7-video.css','./navy-theme.css','./v7-clean-mobile.css','./app.js','./program-patch.js','./enhancements.js','./ux-v63.js','./program-v64.js','./v7.js','./v7-guard.js','./v7-video.js','./v7-b-triceps.js','./v7-program-v722.js','./manifest.json','./icon-192.png','./icon-512.png','./apple-touch-icon.png'];
+const CACHE_NAME='antrenman-cache-7.2.3';
+const APP_SHELL=['./index.html','./styles.css','./enhancements.css','./ux-v63.css','./v7.css','./v7-video.css','./navy-theme.css','./v7-clean-mobile.css','./app.js','./program-patch.js','./enhancements.js','./ux-v63.js','./program-v64.js','./v7.js','./v7-guard.js','./v7-video.js','./v7-b-triceps.js','./v7-program-v722.js','./v7-program-v723.js','./manifest.json','./icon-192.png','./icon-512.png','./apple-touch-icon.png'];
 
 self.addEventListener('install',event=>{
   self.skipWaiting();
